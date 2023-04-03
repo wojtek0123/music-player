@@ -6,19 +6,32 @@ import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import AuthContextProvider from "./context/AuthContext";
 import HomePage from "./pages/HomePage";
+import AuthGuard from "./helpers/AuthGuard";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <HomePage />,
+    element: (
+      <AuthGuard authAccess={true}>
+        <HomePage />
+      </AuthGuard>
+    ),
   },
   {
     path: "/register",
-    element: <RegisterPage />,
+    element: (
+      <AuthGuard authAccess={false}>
+        <RegisterPage />
+      </AuthGuard>
+    ),
   },
   {
     path: "/login",
-    element: <LoginPage />,
+    element: (
+      <AuthGuard authAccess={false}>
+        <LoginPage />
+      </AuthGuard>
+    ),
   },
 ]);
 
