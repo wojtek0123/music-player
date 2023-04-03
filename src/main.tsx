@@ -6,7 +6,7 @@ import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import AuthContextProvider from "./context/AuthContext";
 import HomePage from "./pages/HomePage";
-import AuthGuard from "./helpers/AuthGuard";
+import AuthGuard from "./components/AuthGuard";
 
 const router = createBrowserRouter([
   {
