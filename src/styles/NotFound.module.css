@@ -1,0 +1,33 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100svh;
+  flex-direction: column;
+}
+
+.image {
+  max-width: 60rem;
+  width: 100%;
+}
+
+.link {
+  text-decoration: none;
+  color: var(--font-color);
+  background-color: var(--button-background-color);
+  border-radius: var(--rounded);
+  padding: 0.5rem 1rem;
+  font-size: 1.1rem;
+  transition: opacity 0.3s;
+}
+
+.link:hover {
+  opacity: 0.7;
+}
+
+@media (min-width: 1024px) {
+  .link {
+    font-size: 1.4rem;
+    padding: 0.5rem 1.5rem;
+  }
+}
