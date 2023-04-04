@@ -1,6 +1,7 @@
 // eslint-disable-next-line import/named
 import { Session } from "@supabase/supabase-js";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+// eslint-disable-next-line import/named
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { supabase } from "../../helpers/supabase";
 
 export interface IAuth {
@@ -17,12 +18,12 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setSession: (state, actions) => {
+    setSession: (state, actions: PayloadAction<Session | null>) => {
       state.session = actions.payload;
     },
   },
   extraReducers(builder) {
-    builder.addCase(getSession.fulfilled, (state, actions) => {
+    builder.addCase(getSession.fulfilled, (state, actions: PayloadAction<Session | null>) => {
       state.status = "succeeded";
       state.session = actions.payload;
     });
