@@ -1,26 +1,25 @@
-import { useContext, useEffect } from "react";
-import { AuthContext } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { IAuth, getSession } from "../features/auth/authSlice";
+import { PlayerState } from "../features/player/playerSlice";
+import { AppDispatch } from "../app/store";
 
-interface AuthGuardProps {
-  children: JSX.Element;
-  authAccess: boolean;
-}
-
-const AuthGuard = ({ children, authAccess }: AuthGuardProps) => {
+const AuthGuard = () => {
   const navigate = useNavigate();
-  const { session } = useContext(AuthContext);
+  const dispatch = useDispatch<AppDispatch>();
+  const session = useSelector((state: { player: PlayerState; auth: IAuth }) => state.auth.session);
+  const status = useSelector((state: { player: PlayerState; auth: IAuth }) => state.auth.status);
 
   useEffect(() => {
-    if (!session && authAccess) {
-      navigate("/login");
-    }
-    if (session && !authAccess) {
-      navigate("/");
-    }
-  }, [session, navigate, authAccess]);
+    if (status === "idle") dispatch(getSession());
+  }, [dispatch, status]);
 
-  return <>{children}</>;
+  useEffect(() => {
+    if (session) navigate("/");
+  }, [session, navigate]);
+
+  return <Outlet />;
 };
 
 export default AuthGuard;
