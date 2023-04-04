@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const NotFoundPage = () => {
   return (
     <div className={styles.container}>
-      <img className={styles.image} src={NotFoundPageImage} alt="" />
+      <img className={styles.image} src={NotFoundPageImage} alt="404 Error. Page not found!" />
       <Link to="/" className={styles.link}>
         Home
       </Link>

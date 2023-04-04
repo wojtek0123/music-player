@@ -9,15 +9,24 @@ import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
 import AuthGuard from "./components/AuthGuard";
 import NotFoundPage from "./pages/NotFoundPage";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 const router = createBrowserRouter([
   {
     path: "",
-    element: <HomePage />,
+    element: (
+      <ErrorBoundary>
+        <HomePage />
+      </ErrorBoundary>
+    ),
   },
   {
     path: "",
-    element: <AuthGuard />,
+    element: (
+      <ErrorBoundary>
+        <AuthGuard />
+      </ErrorBoundary>
+    ),
     children: [
       {
         path: "/login",
