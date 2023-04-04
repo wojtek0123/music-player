@@ -6,43 +6,34 @@ import "../src/styles/index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
-import AuthContextProvider from "./context/AuthContext";
 import HomePage from "./pages/HomePage";
 import AuthGuard from "./components/AuthGuard";
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: (
-      <AuthGuard authAccess={true}>
-        <HomePage />
-      </AuthGuard>
-    ),
+    path: "",
+    element: <HomePage />,
   },
   {
-    path: "/register",
-    element: (
-      <AuthGuard authAccess={false}>
-        <RegisterPage />
-      </AuthGuard>
-    ),
-  },
-  {
-    path: "/login",
-    element: (
-      <AuthGuard authAccess={false}>
-        <LoginPage />
-      </AuthGuard>
-    ),
+    path: "",
+    element: <AuthGuard />,
+    children: [
+      {
+        path: "/login",
+        element: <LoginPage />,
+      },
+      {
+        path: "/register",
+        element: <RegisterPage />,
+      },
+    ],
   },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <AuthContextProvider>
-      <Provider store={store}>
-        <RouterProvider router={router} />
-      </Provider>
-    </AuthContextProvider>
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   </React.StrictMode>,
 );
