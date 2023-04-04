@@ -15,16 +15,27 @@ export const Player = ({ song }: PlayerProps): JSX.Element => {
 
   // const myAudio = new Audio(song?.link);
 
+  const albumCover = <Icon icon="akar-icons:music-album-fill" color="white" width={50} />;
+
+  const playToggleButton = (
+    <Icon
+      icon={isPlaying ? "material-symbols:pause-circle-rounded" : "material-symbols:play-circle-rounded"}
+      color="white"
+      width={50}
+      onClick={() => dispatch(playToggle())}
+    />
+  );
+
   return (
     <div className={styles.container}>
-      <Icon icon="zondicons:music-album" color="white" />
-      <div className="songInfo">
-        <div>{song?.title ?? "unknown"}</div>
-        <div>{song?.author ?? "unknown"}</div>
-        <p>isPlaying: {isPlaying.valueOf()}</p>
+      <div className={styles.songBox}>
+        {albumCover}
+        <div className={styles.songInfo}>
+          <div className={styles.title}>{song?.title ?? "unknown"}</div>
+          <div className={styles.author}>{song?.author ?? "unknown"}</div>
+        </div>
       </div>
-
-      <Icon icon="material-symbols:pause-circle-rounded" color="white" onClick={() => dispatch(playToggle())} />
+      {playToggleButton}
     </div>
   );
 };
