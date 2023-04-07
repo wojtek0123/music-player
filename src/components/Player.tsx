@@ -28,10 +28,10 @@ export const Player = (): JSX.Element => {
     <div className={styles.songBox}>
       {albumCover}
       <div className={styles.songInfo}>
-        <button className={styles.title} tabIndex={0}>
+        <button className={styles.title} tabIndex={0} onClick={(e) => e.stopPropagation()}>
           {currentSong?.title ?? "unknown"}
         </button>
-        <button className={styles.author} tabIndex={0}>
+        <button className={styles.author} tabIndex={0} onClick={(e) => e.stopPropagation()}>
           {currentSong?.author ?? "unknown"}
         </button>
       </div>
@@ -99,7 +99,15 @@ export const Player = (): JSX.Element => {
   if (currentSong?.link === undefined) return <></>;
 
   return (
-    <div className={styles.container}>
+    <div
+      className={mobileFullscreenView ? `${styles.container} ${styles.mobileFullscreenView}` : styles.container}
+      role="button"
+      tabIndex={0}
+      onClick={() => setMobileFullscreenView(true)}
+      onKeyPress={(e) => {
+        if (e.key === "Enter") setMobileFullscreenView(true);
+      }}
+    >
       {songBox}
       {controls}
     </div>
