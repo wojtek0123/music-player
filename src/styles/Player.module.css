@@ -3,10 +3,10 @@
   bottom: 0;
   left: 0;
   right: 0;
+  top: auto;
   
   width: 100%;
   padding: 1rem;
-
 
   display: flex;
   flex-direction: row;
@@ -15,10 +15,59 @@
   background-color: var( --button-background-color);
 }
 
+.container button {
+  background-color: transparent;
+  border: none;
+}
+
+.container:is(.mobileFullscreenView) {
+  top: 0;
+
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.minimizeButton {
+  position: fixed;
+  left: 5%;
+  top: 1rem;
+  width: 30px;
+}
+
+.minimizeButtonIcon{
+
+}
+
 .songBox {
   display: flex;
   flex-direction: row;
+  align-items: center;
   
+}
+
+.container:is(.mobileFullscreenView) .songBox {
+  margin: 0 0 1rem;
+  
+  flex-direction: column;
+}
+
+.albumCoverIcon {
+  width: 3rem;
+  height: auto;
+}
+
+.container:is(.mobileFullscreenView) .albumCoverIcon{
+  width: 80%;
+  height: auto;
+}
+
+.container:is(.mobileFullscreenView) .songInfoWithHeart {
+  
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: calc(80% - 2rem);
 }
 
 .songInfo {
@@ -31,9 +80,41 @@
 
 .songInfo > .title {
   font-size: 1rem;
+  color: var(--font-color);
 }
 
 .songInfo > .author {
   font-size: 0.8rem;
+  color: var(--font-color);
   opacity: 0.7;
+}
+
+.heartIcon {
+  width: 2rem;
+  height: auto;
+}
+
+.container:is(.mobileFullscreenView) .controls {
+  margin: 1rem 0 3rem;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container:is(.mobileFullscreenView) .progressBar {
+  margin: 1rem 0;
+  width: 80%;
+}
+
+.container:is(.mobileFullscreenView) .controlButtons {
+  
+}
+
+.container:not(.mobileFullscreenView) .progressBar ,
+.container:not(.mobileFullscreenView) .repeatButton ,
+.container:not(.mobileFullscreenView) .skipBackButton ,
+.container:not(.mobileFullscreenView) .skipForwardButton ,
+.container:not(.mobileFullscreenView) .shuffleButton {
+  display: none;
 }
