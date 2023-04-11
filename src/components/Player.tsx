@@ -30,22 +30,27 @@ export const Player = (): JSX.Element => {
         setMobileFullscreenView(false);
       }}
     >
-      <Icon icon="material-symbols:keyboard-arrow-down-rounded" color="white" width={30} />
+      <Icon className={styles.minimizeButtonIcon} icon="material-symbols:keyboard-arrow-down-rounded" color="white" />
     </button>
   ) : null;
 
-  const albumCover = <Icon icon="akar-icons:music-album-fill" color="white" width={50} />;
+  const albumCover = <Icon className={styles.albumCoverIcon} icon="akar-icons:music-album-fill" color="white" />;
 
   const songBox = (
     <div className={styles.songBox}>
       {albumCover}
-      <div className={styles.songInfo}>
-        <button className={styles.title} tabIndex={0} onClick={(e) => e.stopPropagation()}>
-          {currentSong?.title ?? "unknown"}
-        </button>
-        <button className={styles.author} tabIndex={0} onClick={(e) => e.stopPropagation()}>
-          {currentSong?.author ?? "unknown"}
-        </button>
+      <div className={styles.songInfoWithHeart}>
+        <div className={styles.songInfo}>
+          <button className={styles.title} tabIndex={0} onClick={(e) => e.stopPropagation()}>
+            {currentSong?.title ?? "unknown"}
+          </button>
+          <button className={styles.author} tabIndex={0} onClick={(e) => e.stopPropagation()}>
+            {currentSong?.author ?? "unknown"}
+          </button>
+        </div>
+        {mobileFullscreenView ? (
+          <Icon className={styles.heartIcon} icon="mdi:cards-heart-outline" color="white" />
+        ) : null}
       </div>
     </div>
   );
@@ -71,7 +76,6 @@ export const Player = (): JSX.Element => {
       onClick={(e) => {
         e.stopPropagation();
         dispatch(playToggle());
-        console.log(myAudio.duration);
         isPlaying ? myAudio?.pause() : myAudio?.play();
       }}
     >
