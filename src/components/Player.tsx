@@ -22,6 +22,18 @@ export const Player = (): JSX.Element => {
   const [mobileFullscreenView, setMobileFullscreenView] = useState(false);
   const [myAudio, setMyAudio] = useState(new Audio(currentSong?.link));
 
+  const minimizeButton = mobileFullscreenView ? (
+    <button
+      className={styles.minimizeButton}
+      onClick={(e) => {
+        e.stopPropagation();
+        setMobileFullscreenView(false);
+      }}
+    >
+      <Icon icon="material-symbols:keyboard-arrow-down-rounded" color="white" width={30} />
+    </button>
+  ) : null;
+
   const albumCover = <Icon icon="akar-icons:music-album-fill" color="white" width={50} />;
 
   const songBox = (
@@ -108,6 +120,7 @@ export const Player = (): JSX.Element => {
         if (e.key === "Enter") setMobileFullscreenView(true);
       }}
     >
+      {minimizeButton}
       {songBox}
       {controls}
     </div>
