@@ -1,3 +1,4 @@
+import Navigation from "../components/Navigation";
 import styles from "../styles/Home.module.css";
 // import { Song } from "../helpers/types";
 // import { Player } from "../components/Player";
@@ -11,7 +12,12 @@ import styles from "../styles/Home.module.css";
 // };
 
 const HomePage = () => {
-  return <div className={styles.container}>{/* <Player song={song} /> */}</div>;
+  return (
+    <div className={styles.container}>
+      <Navigation></Navigation>
+      {/* <Player song={song} /> */}
+    </div>
+  );
 };
 
 export default HomePage;
