@@ -91,14 +91,14 @@ const songs: Song[] = [
 ];
 
 const HomePage = () => {
-  return (
+  return <>
+    <Navigation></Navigation>
     <div className={styles.container}>
-      <Navigation></Navigation>
       <Section songs={songs} header="Trending" />
       <Section songs={songs} header="Most popular" />
       <Section songs={songs} header="For you" />
     </div>
-  );
+  </>
 };
 
 export default HomePage;
