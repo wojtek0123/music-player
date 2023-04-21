@@ -3,6 +3,7 @@
   flex-direction: column;
   justify-content: center;
   gap: 3rem;
+  min-height: 100svh;
 }
 @media screen and (min-width: 1000px) {
   .container {

@@ -1,3 +1,4 @@
+import Navigation from "../components/Navigation";
 import styles from "../styles/Home.module.css";
 import Section from "../components/Section";
 import { Song } from "../helpers/types";
@@ -92,6 +93,7 @@ const songs: Song[] = [
 const HomePage = () => {
   return (
     <div className={styles.container}>
+      <Navigation></Navigation>
       <Section songs={songs} header="Trending" />
       <Section songs={songs} header="Most popular" />
       <Section songs={songs} header="For you" />
