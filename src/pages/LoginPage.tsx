@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { supabase } from "../helpers/supabase";
+import { supabase } from "../lib/supabase";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "../styles/Auth.module.css";
 import { checkEmailValidation } from "../utils/emailValidation";
