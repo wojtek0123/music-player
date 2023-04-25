@@ -12,8 +12,9 @@ import NotFoundPage from "./pages/NotFoundPage";
 import ErrorBoundary from "./components/ErrorBoundary";
 import PlaylistPage from "./pages/PlaylistPage";
 import { getPlaylists } from "./features/playlists/playlistsSlice";
+import { getSession } from "./features/auth/authSlice";
 
-console.log("INIT");
+store.dispatch(getSession());
 store.dispatch(getPlaylists());
 
 const router = createBrowserRouter([
