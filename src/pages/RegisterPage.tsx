@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styles from "../styles/Auth.module.css";
 import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "../helpers/supabase";
+import { supabase } from "../lib/supabase";
 import { isTextLengthEqualZero } from "../utils/isTextLengthEqualZero";
 import { useDispatch } from "react-redux";
 import { setSession } from "../features/auth/authSlice";

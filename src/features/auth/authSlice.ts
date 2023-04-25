@@ -2,7 +2,7 @@
 import { Session } from "@supabase/supabase-js";
 // eslint-disable-next-line import/named
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { supabase } from "../../helpers/supabase";
+import { supabase } from "../../lib/supabase";
 
 export interface IAuth {
   session: Session | null;

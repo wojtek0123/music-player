@@ -1,45 +1,31 @@
-import type { Song } from "../helpers/types";
+import { Link } from "react-router-dom";
 import styles from "../styles/Section.module.css";
-import { Icon } from "@iconify/react";
-import { useState } from "react";
+import { Playlist } from "../features/playlists/playlistsSlice";
+import Song from "./Song";
 
 interface SectionProps {
-  songs: Song[];
-  header: string;
+  playlist: Playlist | undefined;
 }
 
-const Section = ({ songs, header }: SectionProps) => {
-  const [displayedSongs, setDisplayedSongs] = useState(songs.slice(0, 4));
-  const [displayedCount, setDisplayedCount] = useState(4);
+const displayNumberOfSongs = 5;
 
-  const handleShowMoreLess = () => {
-    const newCount = displayedCount >= songs.length ? 4 : displayedCount + 5;
-    const newDisplayedSongs = songs.slice(0, newCount);
-    setDisplayedSongs(newDisplayedSongs);
-    setDisplayedCount(newCount);
-  };
+const Section = ({ playlist }: SectionProps) => {
+  if (!playlist) {
+    return <div>No playlist to display</div>;
+  }
 
   return (
     <section className={styles.section}>
-      <h2 className={styles.header}>{header}</h2>
+      <h2 className={styles.header}>{playlist.name}</h2>
       <div className={styles.songs}>
-        {displayedSongs.map((song) => (
-          <div className={styles.song} key={song.id}>
-            <Icon className={styles.icon} icon="zondicons:music-album" color="white" />
-            <div className={styles.wrapper}>
-              <div className={styles.title}>
-                <h3>{song.title}</h3>
-                <p>{song.author}</p>
-              </div>
-              <button type="button" className={styles["like-btn"]}>
-                <Icon icon="mdi:cards-heart-outline" color="white" />
-              </button>
-            </div>
-          </div>
-        ))}
-        <button type="button" className={styles["show-more-btn"]} onClick={handleShowMoreLess}>
-          {displayedCount >= songs.length ? "Show less" : "Show more"}
-        </button>
+        {playlist.songs.map((song, index) => {
+          if (index < displayNumberOfSongs) {
+            return <Song size="standard" song={song} key={song.id} />;
+          }
+        })}
+        <Link to={"/playlist/" + playlist.id} className={styles["show-more-btn"]}>
+          Show more
+        </Link>
       </div>
     </section>
   );

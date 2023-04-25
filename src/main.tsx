@@ -10,6 +10,12 @@ import HomePage from "./pages/HomePage";
 import AuthGuard from "./components/AuthGuard";
 import NotFoundPage from "./pages/NotFoundPage";
 import ErrorBoundary from "./components/ErrorBoundary";
+import PlaylistPage from "./pages/PlaylistPage";
+import { getPlaylists } from "./features/playlists/playlistsSlice";
+import { getSession } from "./features/auth/authSlice";
+
+store.dispatch(getSession());
+store.dispatch(getPlaylists());
 
 const router = createBrowserRouter([
   {
@@ -19,6 +25,10 @@ const router = createBrowserRouter([
         <HomePage />
       </ErrorBoundary>
     ),
+  },
+  {
+    path: "playlist/:playlistId",
+    element: <PlaylistPage />,
   },
   {
     path: "",
