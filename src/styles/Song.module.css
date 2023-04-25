@@ -5,6 +5,7 @@
   padding: 1rem;
   display: grid;
   grid-template-columns: 4rem 1fr;
+  opacity: 0.85;
 }
 
 .title {
