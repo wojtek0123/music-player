@@ -8,6 +8,7 @@ export interface Song {
   author_id: string;
   created_at: string;
   link: string;
+  time: number;
   album?: string;
   author?: Author;
 }

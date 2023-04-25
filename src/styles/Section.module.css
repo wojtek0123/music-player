@@ -10,56 +10,12 @@
   font-size: 2rem;
 }
 
-.song {
-  border: none;
-  border-radius: var(--rounded);
-  background-color: var(--background-secondary-color);
-  padding: 1rem;
-  display: grid;
-  grid-template-columns: 4rem 1fr;
-}
-
 .songs {
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
 }
 
-.wrapper {
-  margin-left: 1.5rem;
-  display: grid;
-  grid-template-columns: 1fr 3rem;
-}
-
-.title {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.title h3 {
-  font-size: 1.5rem;
-}
-
-.title p {
-  color: var(--secondary-font-color);
-}
-
-.like-btn {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  font-size: 2.5rem;
-  transition: transform 0.25s;
-}
-
-.like-btn:hover {
-  transform: scale(1.1);
-}
 .show-more-btn {
   border: none;
   width: 100%;
@@ -76,10 +32,6 @@
   justify-content: center;
 }
 
-.icon {
-  border-radius: var(--rounded);
-}
-
 @media screen and (min-width: 1000px) {
   .show-more-btn {
     padding: 1.5rem;
@@ -92,11 +44,6 @@
     grid-template-columns: repeat(auto-fit, minmax(35rem, 1fr));
   }
 
-  .song {
-    max-width: 50rem;
-    width: 100%;
-  }
-
   .show-more-btn {
     max-width: 50rem;
   }
@@ -105,10 +52,6 @@
 @media (min-width: 1920px) {
   .songs {
     grid-template-columns: repeat(3, 1fr);
-  }
-
-  .song {
-    max-width: 100%;
   }
 
   .show-more-btn {
