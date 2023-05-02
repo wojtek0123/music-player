@@ -21,6 +21,11 @@ export const Player = (): JSX.Element => {
 
   const [mobileFullscreenView, setMobileFullscreenView] = useState(false);
   const [myAudio, setMyAudio] = useState(new Audio(currentSong?.link));
+  const [songTime, setSongTime] = useState(0);
+
+  myAudio.ontimeupdate = (e) => {
+    setSongTime(Math.floor(e.timeStamp / 1000));
+  };
 
   const minimizeButton = mobileFullscreenView ? (
     <button
@@ -55,7 +60,26 @@ export const Player = (): JSX.Element => {
     </div>
   );
 
-  const progressBar = <input className={styles.progressBar} type="range" name="progressBar" />;
+  const progressBar = (
+    <div>
+      <input
+        className={styles.progressBar}
+        type="range"
+        name="progressBar"
+        min={0}
+        max={myAudio?.duration.toString()}
+        value={songTime}
+        onChange={(e) => {
+          setSongTime(+e.target.value);
+          myAudio.currentTime = +e.target.value;
+        }}
+      />
+      <div className={styles.timeLabels}>
+        <p className={styles.currentSongTime}>{songTime}</p>
+        <p className={styles.leftSongTime}></p>
+      </div>
+    </div>
+  );
 
   const repeatButton = (
     <button className={styles.repeatButton} tabIndex={0}>
@@ -120,7 +144,7 @@ export const Player = (): JSX.Element => {
       role="button"
       tabIndex={0}
       onClick={() => setMobileFullscreenView(true)}
-      onKeyPress={(e) => {
+      onKeyDown={(e) => {
         if (e.key === "Enter") setMobileFullscreenView(true);
       }}
     >

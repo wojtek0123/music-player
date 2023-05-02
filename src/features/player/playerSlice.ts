@@ -35,7 +35,7 @@ export const playerSlice = createSlice({
   extraReducers(builder) {
     builder.addCase(changeSong.fulfilled, (state, actions) => {
       state.status = "succeeded";
-      const [song] = actions.payload;
+      const song = actions.payload;
       state.currentSong = song;
     });
     builder.addCase(changeSong.pending, (state) => {
@@ -49,7 +49,8 @@ export const playerSlice = createSlice({
 });
 
 export const changeSong = createAsyncThunk("player/changeSong", async (id: string) => {
-  const { data: song } = await supabase.from("song").select().eq("id", id);
+  const { data: songs } = await supabase.from("song").select().eq("id", id);
+  const song = songs?.at(0);
 
   return song as Song;
 });
