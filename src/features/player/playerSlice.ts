@@ -1,12 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Song } from "../../helpers/types";
-import { supabase } from "../../helpers/supabase";
+import { supabase } from "../../lib/supabase";
 
-const initialSong: Song = {
-  title: undefined,
-  author: undefined,
-  link: undefined,
-};
+const initialSong: Song | undefined = undefined;
 
 export interface PlayerState {
   currentSong?: Song;
@@ -31,6 +27,12 @@ export const playerSlice = createSlice({
     playToggle: (state) => {
       state.isPlaying = !state.isPlaying;
     },
+    pushHistory: (state, actions) => {
+      state.history.push(actions.payload);
+    },
+    popHistory: (state) => {
+      state.history.pop();
+    },
   },
   extraReducers(builder) {
     builder.addCase(changeSong.fulfilled, (state, actions) => {
@@ -40,7 +42,6 @@ export const playerSlice = createSlice({
     });
     builder.addCase(changeSong.pending, (state) => {
       state.status = "loading";
-      console.log("loading");
     });
     builder.addCase(changeSong.rejected, (state) => {
       state.status = "failed";
@@ -56,6 +57,6 @@ export const changeSong = createAsyncThunk("player/changeSong", async (id: strin
 });
 
 // Action creators are generated for each case reducer function
-export const { playToggle } = playerSlice.actions;
+export const { playToggle, pushHistory, popHistory } = playerSlice.actions;
 
 export default playerSlice.reducer;
