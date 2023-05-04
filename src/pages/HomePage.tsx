@@ -1,4 +1,3 @@
-import Navigation from "../components/Navigation";
 import styles from "../styles/Home.module.css";
 import Section from "../components/Section";
 import useGetDefaultPlaylists from "../hooks/useDefaultPlaylists";
@@ -8,7 +7,6 @@ const HomePage = () => {
 
   return (
     <main className={styles.main}>
-      <Navigation />
       <div className={styles.container}>
         {status === "loading" && <div className={styles.message}>Loading...</div>}
         {status === "failed" && (
