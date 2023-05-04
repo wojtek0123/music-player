@@ -33,6 +33,12 @@ export const playerSlice = createSlice({
     popHistory: (state) => {
       state.history.pop();
     },
+    pushQueue: (state, actions) => {
+      state.queue.push(actions.payload);
+    },
+    shiftQueue: (state) => {
+      state.queue.shift();
+    },
   },
   extraReducers(builder) {
     builder.addCase(changeSong.fulfilled, (state, actions) => {
@@ -56,7 +62,6 @@ export const changeSong = createAsyncThunk("player/changeSong", async (id: strin
   return song as Song;
 });
 
-// Action creators are generated for each case reducer function
-export const { playToggle, pushHistory, popHistory } = playerSlice.actions;
+export const { playToggle, pushHistory, popHistory, pushQueue, shiftQueue } = playerSlice.actions;
 
 export default playerSlice.reducer;
