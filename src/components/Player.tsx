@@ -1,17 +1,19 @@
 import { Icon } from "@iconify/react";
 import type { AppDispatch, RootState } from "../app/store";
 import { useDispatch, useSelector } from "react-redux";
-import { playToggle } from "../features/player/playerSlice";
+import { pushHistory, playToggle, changeSong, popHistory } from "../features/player/playerSlice";
 import styles from "../styles/Player.module.css";
 import { useEffect, useRef, useState } from "react";
 
 export const Player = (): JSX.Element => {
   const currentSong = useSelector((state: RootState) => state.player.currentSong);
   const isPlaying = useSelector((state: RootState) => state.player.isPlaying);
+  const lastSongFromHistory = useSelector((state: RootState) => state.player.history.slice(-1)[0]);
+
   const dispatch = useDispatch<AppDispatch>();
 
   const [mobileFullscreenView, setMobileFullscreenView] = useState(false);
-  const [trackProgress, setTrackProgress] = useState(0);
+  const [songProgress, setSongProgress] = useState(0);
 
   const audioRef = useRef<HTMLAudioElement>(new Audio(currentSong?.link));
   const intervalRef = useRef<number | null>(null);
@@ -22,7 +24,7 @@ export const Player = (): JSX.Element => {
 
     audioRef.current = new Audio(currentSong?.link);
     if (intervalRef.current !== null) window.clearInterval(intervalRef.current);
-    setTrackProgress(audioRef.current.currentTime);
+    setSongProgress(audioRef.current.currentTime);
 
     if (isReadyRef.current && currentSong !== undefined) {
       audioRef.current.play();
@@ -40,7 +42,7 @@ export const Player = (): JSX.Element => {
       if (audioRef.current.ended) {
         // to next track
       } else {
-        setTrackProgress(audioRef.current.currentTime);
+        setSongProgress(audioRef.current.currentTime);
       }
     }, 1000);
   };
@@ -48,8 +50,25 @@ export const Player = (): JSX.Element => {
   const onScrub = (value: number) => {
     if (intervalRef.current !== null) window.clearInterval(intervalRef.current);
     audioRef.current.currentTime = value;
-    setTrackProgress(audioRef.current.currentTime);
+    setSongProgress(audioRef.current.currentTime);
     startTimer();
+  };
+
+  const onSkipBackButtonClick = () => {
+    if (songProgress < 1) {
+      const song = lastSongFromHistory;
+      if (song !== undefined) {
+        dispatch(changeSong(song.id));
+        dispatch(popHistory());
+      } else {
+        console.log("No songs left in history");
+      }
+    } else {
+      if (intervalRef.current !== null) window.clearInterval(intervalRef.current);
+      audioRef.current.currentTime = 0;
+      setSongProgress(audioRef.current.currentTime);
+      startTimer();
+    }
   };
 
   const minimizeButton = mobileFullscreenView ? (
@@ -93,11 +112,11 @@ export const Player = (): JSX.Element => {
         name="progressBar"
         min={0}
         max={audioRef.current?.duration.toString()}
-        value={trackProgress}
+        value={songProgress}
         onChange={(e) => onScrub(+e.target.value)}
       />
       <div className={styles.timeLabels}>
-        <p className={styles.currentSongTime}>{Math.round(trackProgress)}</p>
+        <p className={styles.currentSongTime}>{Math.round(songProgress)}</p>
         <p className={styles.leftSongTime}></p>
       </div>
     </div>
@@ -110,7 +129,7 @@ export const Player = (): JSX.Element => {
   );
 
   const skipBackButton = (
-    <button className={styles.skipBackButton} tabIndex={0}>
+    <button className={styles.skipBackButton} tabIndex={0} onClick={onSkipBackButtonClick}>
       <Icon icon="ph:skip-back-fill" color="white" width={50} />
     </button>
   );
@@ -141,7 +160,7 @@ export const Player = (): JSX.Element => {
   );
 
   const skipForwardButton = (
-    <button className={styles.skipForwardButton} tabIndex={0}>
+    <button className={styles.skipForwardButton} tabIndex={0} onClick={() => dispatch(pushHistory(currentSong))}>
       <Icon icon="ph:skip-forward-fill" color="white" width={50} />
     </button>
   );
