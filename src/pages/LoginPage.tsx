@@ -1,19 +1,20 @@
-import { useContext, useState } from "react";
-import { supabase } from "../helpers/supabase";
+import { useState } from "react";
+import { supabase } from "../lib/supabase";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "../styles/Auth.module.css";
-import { AuthContext } from "../context/AuthContext";
 import { checkEmailValidation } from "../utils/emailValidation";
 import { checkMinLength } from "../utils/minLength";
 import { isTextLengthEqualZero } from "../utils/isTextLengthEqualZero";
+import { useDispatch } from "react-redux";
+import { setSession } from "../features/auth/authSlice";
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [enteredEmail, setEnteredEmail] = useState("");
   const [enteredPassword, setEnteredPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const { setSession } = useContext(AuthContext);
   const [status, setStatus] = useState<"ok" | "loading" | "error">("ok");
 
   const onSubmit = async (event: React.FormEvent) => {
@@ -41,8 +42,8 @@ const LoginPage = () => {
         throw new Error(error.message);
       }
 
+      dispatch(setSession(data.session));
       setStatus("ok");
-      setSession(data.session);
       navigate("/");
     } catch (error) {
       setStatus("error");

@@ -1,6 +1,22 @@
 .container {
   display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  padding: 1rem;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+}
+
+.message {
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 1.4rem;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100svh;
 }

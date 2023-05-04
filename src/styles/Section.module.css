@@ -1,0 +1,61 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.header {
+  margin: 2rem 1rem;
+  text-transform: uppercase;
+  font-size: 2rem;
+}
+
+.songs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.show-more-btn {
+  border: none;
+  width: 100%;
+  border-radius: var(--rounded);
+  background-color: var(--background-secondary-color);
+  color: var(--font-color);
+  font-size: 1.5rem;
+  padding: 1.5rem 0;
+  cursor: pointer;
+  display: block;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.85;
+}
+
+@media screen and (min-width: 1000px) {
+  .show-more-btn {
+    padding: 1.5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .songs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(35rem, 1fr));
+  }
+
+  .show-more-btn {
+    max-width: 50rem;
+  }
+}
+
+@media (min-width: 1920px) {
+  .songs {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .show-more-btn {
+    max-width: 100%;
+  }
+}

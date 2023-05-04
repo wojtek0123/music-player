@@ -8,15 +8,35 @@ import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
 import AuthGuard from "./components/AuthGuard";
+import NotFoundPage from "./pages/NotFoundPage";
+import ErrorBoundary from "./components/ErrorBoundary";
+import PlaylistPage from "./pages/PlaylistPage";
+import { getPlaylists } from "./features/playlists/playlistsSlice";
+import { getSession } from "./features/auth/authSlice";
+
+store.dispatch(getSession());
+store.dispatch(getPlaylists());
 
 const router = createBrowserRouter([
   {
     path: "",
-    element: <HomePage />,
+    element: (
+      <ErrorBoundary>
+        <HomePage />
+      </ErrorBoundary>
+    ),
+  },
+  {
+    path: "playlist/:playlistId",
+    element: <PlaylistPage />,
   },
   {
     path: "",
-    element: <AuthGuard />,
+    element: (
+      <ErrorBoundary>
+        <AuthGuard />
+      </ErrorBoundary>
+    ),
     children: [
       {
         path: "/login",
@@ -27,6 +47,10 @@ const router = createBrowserRouter([
         element: <RegisterPage />,
       },
     ],
+  },
+  {
+    path: "*",
+    element: <NotFoundPage />,
   },
 ]);
 

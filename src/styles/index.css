@@ -9,7 +9,7 @@
 
 :root {
   --background-color: #15191f;
-  --background-secondary-color: #1d242d;
+  --background-secondary-color: #010b02;
   --button-background-color: #017aff;
   --font-color: #fff;
   --secondary-font-color: #8e9196;
@@ -19,8 +19,19 @@
 body {
   min-height: 100svh;
   max-width: 100vw;
-  padding: 0 1rem;
-  background-color: var(--background-color);
+  background: #c33764;
+  background: -webkit-linear-gradient(to left, #1d2671, #c33764);
+  background: linear-gradient(to left, #1d2671, #c33764);
   color: var(--font-color);
   overflow-x: hidden;
+  position: relative;
+  z-index: 0;
+}
+
+body::after {
+  position: fixed;
+  inset: 0;
+  content: "";
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: -1;
 }

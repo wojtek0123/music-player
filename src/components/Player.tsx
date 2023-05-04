@@ -1,30 +1,55 @@
 import { Icon } from "@iconify/react";
 import type { AppDispatch, RootState } from "../app/store";
 import { useDispatch, useSelector } from "react-redux";
-import { changeSong, playToggle } from "../features/player/playerSlice";
+import { playToggle } from "../features/player/playerSlice";
 import styles from "../styles/Player.module.css";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export const Player = (): JSX.Element => {
   const currentSong = useSelector((state: RootState) => state.player.currentSong);
   const isPlaying = useSelector((state: RootState) => state.player.isPlaying);
   const dispatch = useDispatch<AppDispatch>();
 
-  // ! temp loading song
-  useEffect(() => {
-    dispatch(changeSong("ba898259-9001-44b1-a2ef-051922bcfcb3"));
-  }, []);
+  const [mobileFullscreenView, setMobileFullscreenView] = useState(false);
+  const [trackProgress, setTrackProgress] = useState(0);
+
+  const audioRef = useRef<HTMLAudioElement>(new Audio(currentSong?.link));
+  const intervalRef = useRef<number | null>(null);
+  const isReadyRef = useRef<boolean>(false);
 
   useEffect(() => {
-    setMyAudio(new Audio(currentSong?.link));
+    audioRef.current.pause();
+
+    audioRef.current = new Audio(currentSong?.link);
+    if (intervalRef.current !== null) window.clearInterval(intervalRef.current);
+    setTrackProgress(audioRef.current.currentTime);
+
+    if (isReadyRef.current && currentSong !== undefined) {
+      audioRef.current.play();
+      if (!isPlaying) dispatch(playToggle());
+      startTimer();
+    } else {
+      isReadyRef.current = true;
+    }
   }, [currentSong]);
 
-  const [mobileFullscreenView, setMobileFullscreenView] = useState(false);
-  const [myAudio, setMyAudio] = useState(new Audio(currentSong?.link));
-  const [songTime, setSongTime] = useState(0);
+  const startTimer = () => {
+    if (intervalRef.current !== null) window.clearInterval(intervalRef.current);
 
-  myAudio.ontimeupdate = (e) => {
-    setSongTime(Math.floor(e.timeStamp / 1000));
+    intervalRef.current = window.setInterval(() => {
+      if (audioRef.current.ended) {
+        // to next track
+      } else {
+        setTrackProgress(audioRef.current.currentTime);
+      }
+    }, 1000);
+  };
+
+  const onScrub = (value: number) => {
+    if (intervalRef.current !== null) window.clearInterval(intervalRef.current);
+    audioRef.current.currentTime = value;
+    setTrackProgress(audioRef.current.currentTime);
+    startTimer();
   };
 
   const minimizeButton = mobileFullscreenView ? (
@@ -50,7 +75,7 @@ export const Player = (): JSX.Element => {
             {currentSong?.title ?? "unknown"}
           </button>
           <button className={styles.author} tabIndex={0} onClick={(e) => e.stopPropagation()}>
-            {currentSong?.author ?? "unknown"}
+            {currentSong?.author?.name ?? "unknown"}
           </button>
         </div>
         {mobileFullscreenView ? (
@@ -67,15 +92,12 @@ export const Player = (): JSX.Element => {
         type="range"
         name="progressBar"
         min={0}
-        max={myAudio?.duration.toString()}
-        value={songTime}
-        onChange={(e) => {
-          setSongTime(+e.target.value);
-          myAudio.currentTime = +e.target.value;
-        }}
+        max={audioRef.current?.duration.toString()}
+        value={trackProgress}
+        onChange={(e) => onScrub(+e.target.value)}
       />
       <div className={styles.timeLabels}>
-        <p className={styles.currentSongTime}>{songTime}</p>
+        <p className={styles.currentSongTime}>{Math.round(trackProgress)}</p>
         <p className={styles.leftSongTime}></p>
       </div>
     </div>
@@ -100,7 +122,14 @@ export const Player = (): JSX.Element => {
       onClick={(e) => {
         e.stopPropagation();
         dispatch(playToggle());
-        isPlaying ? myAudio?.pause() : myAudio?.play();
+
+        if (isPlaying) {
+          if (intervalRef.current !== null) window.clearInterval(intervalRef.current);
+          audioRef.current?.pause();
+        } else {
+          audioRef.current?.play();
+          startTimer();
+        }
       }}
     >
       <Icon

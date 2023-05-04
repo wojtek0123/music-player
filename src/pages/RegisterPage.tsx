@@ -1,19 +1,20 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import styles from "../styles/Auth.module.css";
 import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "../helpers/supabase";
-import { AuthContext } from "../context/AuthContext";
+import { supabase } from "../lib/supabase";
 import { isTextLengthEqualZero } from "../utils/isTextLengthEqualZero";
+import { useDispatch } from "react-redux";
+import { setSession } from "../features/auth/authSlice";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [enteredUsername, setEnteredUsername] = useState("");
   const [enteredEmail, setEnteredEmail] = useState("");
   const [enteredPassword, setEnteredPassword] = useState("");
   const [enteredConfirmPassword, setEnteredConfirmPassword] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const { setSession } = useContext(AuthContext);
   const [status, setStatus] = useState<"ok" | "loading" | "error">("ok");
 
   const onSubmit = async (event: React.FormEvent) => {
@@ -49,7 +50,7 @@ const RegisterPage = () => {
         throw new Error(error.message);
       }
 
-      setSession(data.session);
+      dispatch(setSession(data.session));
       setStatus("ok");
       navigate("/");
     } catch (error) {
