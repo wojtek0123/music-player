@@ -1,3 +1,7 @@
+.container {
+  position: relative;
+}
+
 .song {
   border: none;
   border-radius: var(--rounded);
@@ -104,6 +108,34 @@
   display: none;
 }
 
+.popup-menu {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  z-index: 10;
+  top: 1rem;
+  right: 4rem;
+  background-color: var(--background-secondary-color);
+  box-shadow: 0 0 1rem var(--background-secondary-color);
+  border-radius: var(--rounded);
+}
+
+.popup-menu button {
+  border: none;
+  background-color: transparent;
+  color: var(--font-color);
+  padding: 0.25rem 0.5rem;
+  transition: background-color 0.2s;
+  cursor: pointer;
+  border-radius: 0.1rem;
+}
+
+.popup-menu button:hover {
+  background-color: var(--secondary-font-color);
+}
+
 @media (min-width: 640px) {
   .wrapper-with-details {
     grid-template-columns: 1fr 3rem 3rem 2rem;
@@ -163,8 +195,23 @@
     align-content: center;
   }
 
+  .wrapper-with-details .title p {
+    color: var(--font-color);
+    font-size: 1.2rem;
+  }
+
+  .wrapper-with-details .title h3 {
+    font-size: 1.2rem;
+    text-decoration: none;
+    font-weight: 400;
+  }
+
   .wrapper-with-details {
     grid-template-columns: 1fr 0.3fr 3rem 3rem 2rem;
+  }
+
+  .time {
+    font-size: 1.2rem;
   }
 }
 
