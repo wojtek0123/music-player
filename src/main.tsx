@@ -14,6 +14,7 @@ import PlaylistPage from "./pages/PlaylistPage";
 import { getPlaylists } from "./features/playlists/playlistsSlice";
 import { getSession } from "./features/auth/authSlice";
 import { PopupContextProvider } from "./context/popup-context";
+import Modal from "./components/Modal";
 
 store.dispatch(getSession());
 store.dispatch(getPlaylists());
@@ -24,6 +25,7 @@ const router = createBrowserRouter([
     element: (
       <ErrorBoundary>
         <HomePage />
+        <Modal />
       </ErrorBoundary>
     ),
   },
