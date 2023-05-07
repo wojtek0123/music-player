@@ -47,22 +47,6 @@
   transform: scale(1.1);
 }
 
-.show-more-btn {
-  border: none;
-  width: 100%;
-  border-radius: var(--rounded);
-  background-color: var(--background-secondary-color);
-  color: var(--font-color);
-  font-size: 1.5rem;
-  padding: 1.5rem 0;
-  cursor: pointer;
-  display: block;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .context-menu-btn {
   border: none;
   background-color: transparent;
