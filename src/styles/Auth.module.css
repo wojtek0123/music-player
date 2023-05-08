@@ -41,6 +41,7 @@
   font-size: 1.1rem;
   margin-top: 2rem;
   margin-bottom: 0.75rem;
+  cursor: pointer;
 }
 
 .change-btn {
@@ -49,6 +50,7 @@
   border: none;
   font-size: 0.9rem;
   text-decoration: none;
+  cursor: pointer;
 }
 
 .message {
