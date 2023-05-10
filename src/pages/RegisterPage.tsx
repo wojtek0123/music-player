@@ -31,34 +31,27 @@ const RegisterPage = () => {
 
     setStatus("loading");
 
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email: enteredEmail,
-        password: enteredPassword,
-        options: {
-          data: {
-            username: enteredUsername,
-          },
+    const { data, error } = await supabase.auth.signUp({
+      email: enteredEmail,
+      password: enteredPassword,
+      options: {
+        data: {
+          username: enteredUsername,
         },
-      });
+      },
+    });
 
-      clearInputs();
+    clearInputs();
 
-      if (error) {
-        setErrorMessage(error.message);
-        setStatus("error");
-        throw new Error(error.message);
-      }
-
-      dispatch(setSession(data.session));
-      setStatus("ok");
-      navigate("/");
-    } catch (error) {
+    if (error) {
+      setErrorMessage(error.message);
       setStatus("error");
-      if (error instanceof Error) {
-        console.error(error.message);
-      }
+      return;
     }
+
+    dispatch(setSession(data.session));
+    setStatus("ok");
+    navigate("/");
   };
 
   const checkEmailValidation = () => {

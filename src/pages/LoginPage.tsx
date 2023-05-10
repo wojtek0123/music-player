@@ -28,29 +28,22 @@ const LoginPage = () => {
 
     setStatus("loading");
 
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: enteredEmail,
-        password: enteredPassword,
-      });
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: enteredEmail,
+      password: enteredPassword,
+    });
 
-      clearInputs();
+    clearInputs();
 
-      if (error) {
-        setErrorMessage(error.message);
-        setStatus("error");
-        throw new Error(error.message);
-      }
-
-      dispatch(setSession(data.session));
-      setStatus("ok");
-      navigate("/");
-    } catch (error) {
+    if (error) {
+      setErrorMessage(error.message);
       setStatus("error");
-      if (error instanceof Error) {
-        console.error(error.message);
-      }
+      return;
     }
+
+    dispatch(setSession(data.session));
+    setStatus("ok");
+    navigate("/");
   };
 
   const clearInputs = () => {

@@ -20,7 +20,7 @@ const Section = ({ playlist }: SectionProps) => {
       <div className={styles.songs}>
         {playlist.songs.map((song, index) => {
           if (index < displayNumberOfSongs) {
-            return <Song size="standard" song={song} key={song.id} />;
+            return <Song details={false} size="standard" song={song} key={song.id} />;
           }
         })}
         <Link to={"/playlist/" + playlist.id} className={styles["show-more-btn"]}>
