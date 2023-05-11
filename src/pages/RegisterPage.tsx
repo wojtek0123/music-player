@@ -5,10 +5,12 @@ import { supabase } from "../lib/supabase";
 import { isTextLengthEqualZero } from "../utils/isTextLengthEqualZero";
 import { useDispatch } from "react-redux";
 import { setSession } from "../features/auth/authSlice";
+import { AppDispatch } from "../app/store";
+import { getUserPlaylists } from "../features/playlists/playlistsSlice";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const [enteredUsername, setEnteredUsername] = useState("");
   const [enteredEmail, setEnteredEmail] = useState("");
   const [enteredPassword, setEnteredPassword] = useState("");
@@ -67,6 +69,7 @@ const RegisterPage = () => {
     }
 
     setStatus("ok");
+    dispatch(getUserPlaylists(session.user.id));
     navigate("/");
   };
 

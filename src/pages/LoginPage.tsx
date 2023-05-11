@@ -7,10 +7,12 @@ import { checkMinLength } from "../utils/minLength";
 import { isTextLengthEqualZero } from "../utils/isTextLengthEqualZero";
 import { useDispatch } from "react-redux";
 import { setSession } from "../features/auth/authSlice";
+import { getUserPlaylists } from "../features/playlists/playlistsSlice";
+import { AppDispatch } from "../app/store";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const [enteredEmail, setEnteredEmail] = useState("");
   const [enteredPassword, setEnteredPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -28,7 +30,10 @@ const LoginPage = () => {
 
     setStatus("loading");
 
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const {
+      data: { session },
+      error,
+    } = await supabase.auth.signInWithPassword({
       email: enteredEmail,
       password: enteredPassword,
     });
@@ -41,7 +46,8 @@ const LoginPage = () => {
       return;
     }
 
-    dispatch(setSession(data.session));
+    dispatch(setSession(session));
+    dispatch(getUserPlaylists(session?.user.id ?? ""));
     setStatus("ok");
     navigate("/");
   };
