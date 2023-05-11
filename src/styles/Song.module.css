@@ -5,7 +5,7 @@
 .song {
   border: none;
   border-radius: var(--rounded);
-  background-color: var(--background-secondary-color);
+  background-color: var(--background-color);
   padding: 1rem;
   display: grid;
   grid-template-columns: 4rem 1fr;
@@ -97,27 +97,80 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  padding: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
   z-index: 10;
   top: 1rem;
-  right: 4rem;
-  background-color: var(--background-secondary-color);
-  box-shadow: 0 0 1rem var(--background-secondary-color);
+  right: 2rem;
+  background-color: #282929;
+  box-shadow: 0 0 1rem #282929;
   border-radius: var(--rounded);
+  min-width: 10rem;
 }
 
-.popup-menu button {
+.popup-menu-btn {
   border: none;
   background-color: transparent;
   color: var(--font-color);
-  padding: 0.25rem 0.5rem;
+  padding: 0.25rem 1rem;
   transition: background-color 0.2s;
   cursor: pointer;
   border-radius: 0.1rem;
+  font-size: 0.9rem;
+  text-align: left;
 }
 
-.popup-menu button:hover {
+.popup-menu-btn:hover {
   background-color: var(--secondary-font-color);
+}
+
+.popup-menu-playlist-container {
+  position: relative;
+}
+
+.popup-menu-list {
+  display: none;
+  position: absolute;
+  z-index: 1;
+  list-style-type: none;
+  background-color: #282929;
+  padding: 1rem 0.1rem;
+  box-shadow: 0 0 1rem #282929;
+  border-radius: var(--rounded);
+}
+
+.popup-menu-list li button {
+  min-width: 10rem;
+  border: none;
+  background-color: transparent;
+  color: var(--font-color);
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0.25rem 1rem;
+  transition: background-color 0.2s;
+  width: 100%;
+  text-align: left;
+}
+
+.popup-menu-list li button:hover {
+  background-color: var(--secondary-font-color);
+}
+
+.popup-menu-playlist-container:hover .popup-menu-list {
+  display: block;
+}
+
+.popup-menu-playlist {
+  display: grid;
+  grid-template-columns: 1fr 1rem;
+  align-content: center;
+  color: var(--font-color);
+  padding: 0.25rem 1rem;
+  font-size: 0.9rem;
+}
+
+.arrow-right {
+  height: 0.9rem;
 }
 
 @media (min-width: 640px) {
@@ -154,11 +207,18 @@
     gap: 1rem;
     width: 100%;
   }
+
+  .popup-menu {
+    right: 4rem;
+  }
+
+  .popup-menu-list {
+    transform: translate(-100%, -50%);
+  }
 }
 
 @media (min-width: 1280px) {
   .standard {
-    max-width: 50rem;
     width: 100%;
   }
 

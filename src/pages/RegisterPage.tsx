@@ -31,7 +31,10 @@ const RegisterPage = () => {
 
     setStatus("loading");
 
-    const { data, error } = await supabase.auth.signUp({
+    const {
+      data: { session },
+      error,
+    } = await supabase.auth.signUp({
       email: enteredEmail,
       password: enteredPassword,
       options: {
@@ -49,7 +52,20 @@ const RegisterPage = () => {
       return;
     }
 
-    dispatch(setSession(data.session));
+    if (!session) return;
+
+    dispatch(setSession(session));
+
+    const { error: playlistError } = await supabase
+      .from("playlist")
+      .insert({ name: "liked songs", user_id: session.user.id });
+
+    if (playlistError) {
+      setErrorMessage(playlistError.message);
+      setStatus("error");
+      return;
+    }
+
     setStatus("ok");
     navigate("/");
   };
@@ -115,7 +131,7 @@ const RegisterPage = () => {
           onChange={(event) => setEnteredConfirmPassword(event.target.value)}
           value={enteredConfirmPassword}
           className={styles.input}
-          placeholder="Password"
+          placeholder="Confirm password"
           aria-label="Confirm password"
         />
         {isSubmitted && enteredConfirmPassword.length === 0 && status === "ok" && (
