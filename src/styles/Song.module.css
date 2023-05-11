@@ -173,6 +173,18 @@
   height: 0.9rem;
 }
 
+.login {
+  text-decoration: none;
+  color: var(--font-color);
+  font-size: 0.9rem;
+  padding: 0.25rem 1rem;
+  width: 100%;
+}
+
+.login:hover {
+  background-color: var(--secondary-font-color);
+}
+
 @media (min-width: 640px) {
   .wrapper-with-details {
     grid-template-columns: 1fr 3rem 3rem 2rem;

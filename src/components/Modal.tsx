@@ -5,23 +5,26 @@ import styles from "../styles/Modal.module.css";
 import { supabase } from "../lib/supabase";
 import { useSelector } from "react-redux";
 import { RootState } from "../app/store";
+import { useNavigate } from "react-router-dom";
 
 const Modal = () => {
+  const navigate = useNavigate();
+  const loggedInUserId = useSelector((state: RootState) => state.auth.session?.user.id);
   const [visibility, setVisibility] = useState(false);
   const [enteredPlaylistName, setEnteredPlaylistName] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const session = useSelector((state: RootState) => state.auth.session);
 
   const addPlaylist = async (event: React.FormEvent) => {
-    // todo: if the user is not logged in he should not be able to add a new playlist
     event.preventDefault();
-
     setIsSubmitted(true);
 
+    if (!loggedInUserId) navigate("/login");
     if (enteredPlaylistName.length === 0) return;
 
-    const { error } = await supabase.from("playlist").insert({ name: enteredPlaylistName, user_id: session?.user.id });
+    const { error } = await supabase
+      .from("playlist")
+      .insert({ name: enteredPlaylistName, user_id: loggedInUserId ?? "" });
 
     if (error) {
       setErrorMessage(error.message);

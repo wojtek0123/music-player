@@ -32,7 +32,7 @@ const Song = ({ song, size, details, playlistOwnerId, playlistId }: SongProps) =
   const userPlaylistsExceptLikedSongs = useSelector(
     (state: RootState) => state.playlists.userPlaylistsExpectLikedSongs,
   );
-  const loggedInUserId = useSelector((state: RootState) => state.auth.session?.user.id ?? "");
+  const loggedInUserId = useSelector((state: RootState) => state.auth.session?.user.id);
 
   const getSongTime = () => {
     const hours = Math.floor(song.time / 3600);
@@ -54,7 +54,6 @@ const Song = ({ song, size, details, playlistOwnerId, playlistId }: SongProps) =
   };
 
   const addToPlaylist = async (playlistId: string) => {
-    // todo: check if the song is in this playlist if is user should get a notification
     // todo: after adding a song to playlist pop up should disappear
     const filteredPlaylist = userPlaylists.find((playlist) => playlist.id === playlistId);
 
@@ -62,6 +61,7 @@ const Song = ({ song, size, details, playlistOwnerId, playlistId }: SongProps) =
 
     if (filteredPlaylist.songs.findIndex((s) => s.id === song.id) !== -1) {
       // todo: Notify a user that this song is already in liked playlist
+      console.log("You cannot added this song multiple times");
       return;
     }
 
@@ -104,8 +104,6 @@ const Song = ({ song, size, details, playlistOwnerId, playlistId }: SongProps) =
     return userPlaylistsExceptLikedSongs?.filter((playlist) => playlist.id !== playlistId) ?? [];
   };
 
-  // todo: if user is not logged in he cannot add songs to playlist
-
   return (
     <div className={styles.container}>
       <div className={size === "wide" ? styles.wide + " " + styles.song : styles.standard + " " + styles.song}>
@@ -118,16 +116,21 @@ const Song = ({ song, size, details, playlistOwnerId, playlistId }: SongProps) =
           <div className={details ? styles.details : styles.hide}>
             <span className={styles.time}>{getSongTime()}</span>
           </div>
-          {!isSongIncluded() && (
-            <button type="button" onClick={addToLikedSongs} aria-label="Like" className={styles["like-btn"]}>
-              <Icon icon="mdi:cards-heart-outline" color="white" />
-            </button>
+          {loggedInUserId && (
+            <>
+              {!isSongIncluded() && (
+                <button type="button" onClick={addToLikedSongs} aria-label="Like" className={styles["like-btn"]}>
+                  <Icon icon="mdi:cards-heart-outline" color="white" />
+                </button>
+              )}
+              {isSongIncluded() && (
+                <button type="button" onClick={removeFromLikedSongs} aria-label="Like" className={styles["like-btn"]}>
+                  <Icon icon="mdi:cards-heart" color="white" />
+                </button>
+              )}
+            </>
           )}
-          {isSongIncluded() && (
-            <button type="button" onClick={removeFromLikedSongs} aria-label="Like" className={styles["like-btn"]}>
-              <Icon icon="mdi:cards-heart" color="white" />
-            </button>
-          )}
+          {!loggedInUserId && <div></div>}
           <button type="button" aria-label="Play" className={styles["play-btn"]}>
             <Icon icon="material-symbols:play-circle-rounded" width="100%" color="white" />
           </button>
@@ -156,13 +159,22 @@ const Song = ({ song, size, details, playlistOwnerId, playlistId }: SongProps) =
               <span>Add to playlist</span>
               <Icon className="arrow-right" icon="material-symbols:arrow-right" color="white" width="100%" />
             </div>
-            <ul className={styles["popup-menu-list"]}>
-              {filterPlaylists().map((playlist) => (
-                <li key={playlist.id}>
-                  <button onClick={() => addToPlaylist(playlist.id)}>{playlist.name}</button>
-                </li>
-              ))}
-            </ul>
+            {loggedInUserId && (
+              <ul className={styles["popup-menu-list"]}>
+                {filterPlaylists().map((playlist) => (
+                  <li key={playlist.id}>
+                    <button onClick={() => addToPlaylist(playlist.id)}>{playlist.name}</button>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {!loggedInUserId && (
+              <ul className={styles["popup-menu-list"]}>
+                <Link className={styles.login} to="/login">
+                  You have to log in!
+                </Link>
+              </ul>
+            )}
           </div>
         </div>
       )}
