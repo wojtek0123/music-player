@@ -1,7 +1,7 @@
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../app/store";
-import { setSelectedPlaylist } from "../features/playlists/playlistsSlice";
+import { getPlaylist } from "../features/playlists/playlistsSlice";
 import { useParams } from "react-router-dom";
 import Song from "../components/Song";
 import styles from "../styles/PlaylistPage.module.css";
@@ -10,11 +10,11 @@ import backgroundImage from "../assets/turntable.jpg";
 const PlaylistPage = () => {
   const { playlistId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
-  const status = useSelector((state: RootState) => state.playlists.status);
-  const playlist = useSelector((state: RootState) => state.playlists.selectedPlaylist);
+  const status = useSelector((state: RootState) => state.playlists.selectedPlaylistStatus);
+  const fetchedPlaylist = useSelector((state: RootState) => state.playlists.selectedPlaylist);
 
   const getSongsTime = () => {
-    const songsLengthInSeconds = playlist?.songs.reduce((prev, curr) => prev + curr.time, 0) ?? 0;
+    const songsLengthInSeconds = fetchedPlaylist?.songs.reduce((prev, curr) => prev + curr.time, 0) ?? 0;
 
     const hours = Math.floor(songsLengthInSeconds / 3600);
     const minutes = Math.floor((songsLengthInSeconds % 3600) / 60);
@@ -28,15 +28,12 @@ const PlaylistPage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     if (!playlistId) return;
-    if (status === "succeeded") {
-      dispatch(setSelectedPlaylist(playlistId));
-    }
-  }, [dispatch, playlistId, status]);
+    dispatch(getPlaylist(playlistId));
+  }, [dispatch, playlistId]);
 
   if (status === "loading") {
     return <div>Loading...</div>;
   }
-
   if (status === "failed") {
     return <div>Something went wrong! Try later</div>;
   }
@@ -46,9 +43,9 @@ const PlaylistPage = () => {
       <header className={styles.header}>
         <img src={backgroundImage} alt="" />
         <div className={styles.body}>
-          <h2>{playlist?.name ?? ""}</h2>
+          <h2>{fetchedPlaylist?.name ?? ""}</h2>
           <div className={styles.details}>
-            <span>{playlist?.songs.length ?? 0} songs</span>
+            <span>{fetchedPlaylist?.songs.length ?? 0} songs</span>
             <span>|</span>
             <span>{getSongsTime()}</span>
           </div>
@@ -56,8 +53,15 @@ const PlaylistPage = () => {
       </header>
       <main className={styles.main}>
         <ul className={styles.list}>
-          {playlist?.songs.map((song) => (
-            <Song details={true} size="wide" song={song} key={song.id} />
+          {fetchedPlaylist?.songs.map((song) => (
+            <Song
+              playlistId={fetchedPlaylist.id}
+              playlistOwnerId={fetchedPlaylist.user_id}
+              details={true}
+              size="wide"
+              song={song}
+              key={song.id}
+            />
           ))}
         </ul>
       </main>

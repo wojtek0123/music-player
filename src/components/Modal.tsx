@@ -14,6 +14,7 @@ const Modal = () => {
   const session = useSelector((state: RootState) => state.auth.session);
 
   const addPlaylist = async (event: React.FormEvent) => {
+    // todo: if the user is not logged in he should not be able to add a new playlist
     event.preventDefault();
 
     setIsSubmitted(true);

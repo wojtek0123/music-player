@@ -8,14 +8,16 @@ const useDefaultPlaylists = () => {
   const [mostPopularPlaylist, setMostPopularPlaylist] = useState<Playlist>();
 
   const status = useSelector((state: RootState) => state.playlists.status);
-  const playlists = useSelector((state: RootState) => state.playlists.playlists);
+  const playlists = useSelector((state: RootState) => state.playlists.defaultPlaylists);
 
   useEffect(() => {
     playlists.forEach((playlist) => {
       if (playlist.name === "trending") {
-        const trendingPlaylist = playlists?.filter((playlist) => playlist.name === "trending").at(0);
+        const trendingPlaylist = playlists?.filter((playlist) => playlist.name === "trending");
 
-        setTrendingPlaylist(trendingPlaylist as Playlist);
+        if (!trendingPlaylist) return;
+
+        setTrendingPlaylist(trendingPlaylist[0]);
       }
 
       if (playlist.name === "most popular") {
