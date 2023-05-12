@@ -25,28 +25,28 @@ export interface Author {
   name: string;
 }
 
+export type Status = "idle" | "loading" | "failed" | "succeeded";
+
 export interface PlaylistsState {
-  defaultPlaylists: Playlist[];
   selectedPlaylist?: Playlist;
   userPlaylists: Playlist[];
   likedSongsPlaylist: Playlist | undefined;
   userPlaylistsExpectLikedSongs: Playlist[];
-  status: "idle" | "loading" | "failed" | "succeeded";
-  userPlaylistsStatus: "idle" | "loading" | "failed" | "succeeded";
-  selectedPlaylistStatus: "idle" | "loading" | "failed" | "succeeded";
-  selectedPlaylistErrorMessage: string;
+  userPlaylistsStatus: Status;
+  selectedPlaylistStatus: Status;
+  userPlaylistsErrorMsg: string;
+  selectedPlaylistErrorMsg: string;
 }
 
 const initialState: PlaylistsState = {
-  defaultPlaylists: [],
   userPlaylists: [],
   selectedPlaylist: undefined,
   likedSongsPlaylist: undefined,
   userPlaylistsExpectLikedSongs: [],
-  status: "idle",
   userPlaylistsStatus: "idle",
   selectedPlaylistStatus: "idle",
-  selectedPlaylistErrorMessage: "",
+  userPlaylistsErrorMsg: "",
+  selectedPlaylistErrorMsg: "",
 };
 // todo: Only owner of the liked songs playlist can see this playlist
 // todo: Add property is_private to playlist in supabase database
@@ -87,18 +87,6 @@ export const playlistsSlice = createSlice({
     },
   },
   extraReducers(builder) {
-    builder.addCase(getDefaultPlaylists.fulfilled, (state, actions) => {
-      state.status = "succeeded";
-      if (!actions.payload) return;
-      if (typeof actions.payload === "string") return;
-      state.defaultPlaylists = actions.payload;
-    });
-    builder.addCase(getDefaultPlaylists.rejected, (state) => {
-      state.status = "failed";
-    });
-    builder.addCase(getDefaultPlaylists.pending, (state) => {
-      state.status = "loading";
-    });
     builder.addCase(getUserPlaylists.fulfilled, (state, action) => {
       state.userPlaylistsStatus = "succeeded";
 
@@ -115,8 +103,9 @@ export const playlistsSlice = createSlice({
     builder.addCase(getUserPlaylists.pending, (state) => {
       state.userPlaylistsStatus = "loading";
     });
-    builder.addCase(getUserPlaylists.rejected, (state) => {
+    builder.addCase(getUserPlaylists.rejected, (state, action) => {
       state.userPlaylistsStatus = "failed";
+      state.userPlaylistsErrorMsg = action.payload?.toString() ?? "";
     });
     builder.addCase(getPlaylist.fulfilled, (state, action) => {
       state.selectedPlaylistStatus = "succeeded";
@@ -125,62 +114,43 @@ export const playlistsSlice = createSlice({
     builder.addCase(getPlaylist.pending, (state) => {
       state.selectedPlaylistStatus = "loading";
     });
-    builder.addCase(getPlaylist.rejected, (state) => {
+    builder.addCase(getPlaylist.rejected, (state, action) => {
       state.selectedPlaylistStatus = "failed";
+      state.selectedPlaylistErrorMsg = action.payload?.toString() ?? "";
     });
   },
 });
 
 export const getPlaylist = createAsyncThunk<Playlist | undefined, string>(
   "playlists/getPlaylist",
-  async (playlistId: string) => {
+  async (playlistId: string, { rejectWithValue }) => {
     const { data, error } = await supabase
       .from("playlist")
       .select("id, name, user_id, created_at, songs:song( *, author ( * ) )")
       .eq("id", playlistId);
 
     if (error) {
-      throw new Error(error.message);
+      return rejectWithValue(error.message);
     }
 
     return data?.at(0) as Playlist | undefined;
   },
 );
 
-export const getDefaultPlaylists = createAsyncThunk<Playlist[] | string | undefined>(
-  "playlists/getPlaylists",
-  async () => {
-    const { data: playlists, error } = await supabase
-      .from("playlist")
-      .select("id, name, user_id, created_at, songs:song( *, author ( * ) )")
-      .is("user_id", null);
-
-    if (error) {
-      throw new Error(error.message);
-    }
-
-    if (!playlists) {
-      return [];
-    }
-
-    return playlists as Playlist[];
-  },
-);
-
-export const getUserPlaylists = createAsyncThunk<Playlist[], string | undefined>(
+export const getUserPlaylists = createAsyncThunk<Playlist[], string>(
   "playlists/getUserPlaylists",
-  async (userId?: string) => {
+  async (userId: string, { rejectWithValue }) => {
     const { data: response } = await supabase.auth.getSession();
 
-    if (!response.session && !userId) throw new Error();
+    if (!response.session && userId.length === 0) throw new Error();
 
     const { data, error } = await supabase
       .from("playlist")
       .select("id, name, user_id, created_at, songs:song( *, author ( * ) )")
-      .eq("user_id", userId ? userId : response.session?.user.id ?? "");
+      .eq("user_id", userId.length !== 0 ? userId : response.session?.user.id ?? "");
 
     if (error) {
-      throw new Error(error.message);
+      return rejectWithValue(error.message);
     }
 
     if (!data) {
@@ -191,7 +161,6 @@ export const getUserPlaylists = createAsyncThunk<Playlist[], string | undefined>
   },
 );
 
-export const { setSelectedPlaylist, filterOutSong, removeFromLikedSongsPlaylist, addToLikedSongsPlaylist } =
-  playlistsSlice.actions;
+export const { filterOutSong, removeFromLikedSongsPlaylist, addToLikedSongsPlaylist } = playlistsSlice.actions;
 
 export default playlistsSlice.reducer;

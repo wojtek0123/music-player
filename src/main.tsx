@@ -11,14 +11,13 @@ import AuthGuard from "./components/AuthGuard";
 import NotFoundPage from "./pages/NotFoundPage";
 import ErrorBoundary from "./components/ErrorBoundary";
 import PlaylistPage from "./pages/PlaylistPage";
-import { getDefaultPlaylists, getUserPlaylists } from "./features/playlists/playlistsSlice";
+import { getUserPlaylists } from "./features/playlists/playlistsSlice";
 import { getSession } from "./features/auth/authSlice";
 import { PopupContextProvider } from "./context/popup-context";
 import Modal from "./components/Modal";
 
 store.dispatch(getSession());
-store.dispatch(getDefaultPlaylists());
-store.dispatch(getUserPlaylists());
+store.dispatch(getUserPlaylists(""));
 
 const router = createBrowserRouter([
   {
