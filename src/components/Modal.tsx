@@ -1,11 +1,12 @@
 import { createPortal } from "react-dom";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import styles from "../styles/Modal.module.css";
 import { supabase } from "../lib/supabase";
 import { useSelector } from "react-redux";
 import { RootState } from "../app/store";
 import { useNavigate } from "react-router-dom";
+import { PopupContext } from "../context/popup-context";
 
 const Modal = () => {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ const Modal = () => {
   const [enteredPlaylistName, setEnteredPlaylistName] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const { onHideMenu } = useContext(PopupContext);
 
   const addPlaylist = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -40,7 +42,8 @@ const Modal = () => {
 
   useEffect(() => {
     document.body.style.overflowY = visibility ? "hidden" : "scroll";
-  }, [visibility]);
+    onHideMenu();
+  }, [visibility, onHideMenu]);
 
   return (
     <>

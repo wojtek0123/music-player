@@ -1,14 +1,17 @@
-import { ReactNode, createContext, useState } from "react";
+import { ReactNode, createContext, useState, useCallback } from "react";
 
 interface Popup {
   popupMenuVisibility: { songId: string; show: boolean };
   onToggleMenu: (_id: string) => void;
+  onHideMenu: () => void;
 }
 
 export const PopupContext = createContext<Popup>({
   popupMenuVisibility: { songId: "", show: false },
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   onToggleMenu: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  onHideMenu: () => {},
 });
 
 interface PopupProps {
@@ -35,9 +38,14 @@ export const PopupContextProvider = ({ children }: PopupProps) => {
     setPopupMenuVisibility({ songId: id, show: true });
   };
 
+  const onHideMenu = useCallback(() => {
+    setPopupMenuVisibility({ songId: "", show: false });
+  }, []);
+
   const value = {
     popupMenuVisibility,
     onToggleMenu,
+    onHideMenu,
   };
 
   return <PopupContext.Provider value={value}>{children}</PopupContext.Provider>;

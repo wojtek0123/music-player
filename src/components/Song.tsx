@@ -6,7 +6,7 @@ import {
 } from "../features/playlists/playlistsSlice";
 import { Icon } from "@iconify/react";
 import styles from "../styles/Song.module.css";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { PopupContext } from "../context/popup-context";
 import { supabase } from "../lib/supabase";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,6 +26,7 @@ const Song = ({ song, size, details, playlistOwnerId, playlistId }: SongProps) =
   const {
     popupMenuVisibility: { show, songId },
     onToggleMenu,
+    onHideMenu,
   } = useContext(PopupContext);
   const userPlaylists = useSelector((state: RootState) => state.playlists.userPlaylists);
   const likedSongsPlaylist = useSelector((state: RootState) => state.playlists.likedSongsPlaylist);
@@ -50,6 +51,7 @@ const Song = ({ song, size, details, playlistOwnerId, playlistId }: SongProps) =
       console.error(error.message);
       return;
     }
+    onHideMenu();
     dispatch(filterOutSong({ songId: song.id, playlistId: playlistId ?? "" }));
   };
 
@@ -57,6 +59,7 @@ const Song = ({ song, size, details, playlistOwnerId, playlistId }: SongProps) =
     // todo: after adding a song to playlist pop up should disappear
     const filteredPlaylist = userPlaylists.find((playlist) => playlist.id === playlistId);
 
+    onHideMenu();
     if (!filteredPlaylist) return;
 
     if (filteredPlaylist.songs.findIndex((s) => s.id === song.id) !== -1) {
@@ -103,6 +106,12 @@ const Song = ({ song, size, details, playlistOwnerId, playlistId }: SongProps) =
   const filterPlaylists = () => {
     return userPlaylistsExceptLikedSongs?.filter((playlist) => playlist.id !== playlistId) ?? [];
   };
+
+  useEffect(() => {
+    return () => {
+      onHideMenu();
+    };
+  }, [onHideMenu]);
 
   return (
     <div className={styles.container}>
