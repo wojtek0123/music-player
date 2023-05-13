@@ -14,9 +14,11 @@ import PlaylistPage from "./pages/PlaylistPage";
 import { getUserPlaylists } from "./features/playlists/playlistsSlice";
 import { getSession } from "./features/auth/authSlice";
 import Modal from "./components/Modal";
+import { getUserLikedPlaylists } from "./features/liked-playlists/likedPlaylists";
 
 store.dispatch(getSession());
 store.dispatch(getUserPlaylists(""));
+store.dispatch(getUserLikedPlaylists());
 
 const router = createBrowserRouter([
   {

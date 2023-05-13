@@ -85,6 +85,13 @@ export const playlistsSlice = createSlice({
         state.likedSongsPlaylist.songs = state.likedSongsPlaylist.songs.filter((song) => song.id !== action.payload);
       }
     },
+    filterOutPlaylist: (state, action: PayloadAction<string>) => {
+      state.userPlaylists = state.userPlaylists.filter((playlist) => playlist.id !== action.payload);
+
+      state.userPlaylistsExpectLikedSongs = state.userPlaylistsExpectLikedSongs.filter(
+        (playlist) => playlist.id !== action.payload,
+      );
+    },
   },
   extraReducers(builder) {
     builder.addCase(getUserPlaylists.fulfilled, (state, action) => {
@@ -133,6 +140,10 @@ export const getPlaylist = createAsyncThunk<Playlist | undefined, string>(
       return rejectWithValue(error.message);
     }
 
+    if (data?.length === 0) {
+      return rejectWithValue("There is no such playlist");
+    }
+
     return data?.at(0) as Playlist | undefined;
   },
 );
@@ -161,6 +172,7 @@ export const getUserPlaylists = createAsyncThunk<Playlist[], string>(
   },
 );
 
-export const { filterOutSong, removeFromLikedSongsPlaylist, addToLikedSongsPlaylist } = playlistsSlice.actions;
+export const { filterOutSong, removeFromLikedSongsPlaylist, addToLikedSongsPlaylist, filterOutPlaylist } =
+  playlistsSlice.actions;
 
 export default playlistsSlice.reducer;

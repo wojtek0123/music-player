@@ -26,13 +26,18 @@
 
 .body {
   position: absolute;
-  top: 50%;
+  bottom: 10%;
   left: 1rem;
   z-index: 1;
 }
 
 .body h2 {
-  font-size: 2rem;
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+  /*text-overflow: ellipsis;*/
+  /*white-space: nowrap;*/
+  /*width: 100%;*/
 }
 
 .list {
@@ -46,6 +51,32 @@
   display: flex;
   gap: 0.5rem;
   align-items: center;
+}
+
+.icon {
+  background-color: transparent;
+  border: none;
+}
+
+.button-wrapper {
+  display: grid;
+  grid-template-columns: repeat(3, 3rem);
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.btn {
+   border: none;
+   background-color: transparent;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   cursor: pointer;
+   transition: transform 0.25s;
+ }
+
+.btn:hover {
+  transform: scale(1.1);
 }
 
 @media (min-width: 548px) {
