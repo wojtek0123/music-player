@@ -1,21 +1,21 @@
 import { createPortal } from "react-dom";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import styles from "../styles/Modal.module.css";
 import { supabase } from "../lib/supabase";
-import { useSelector } from "react-redux";
-import { RootState } from "../app/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../app/store";
 import { useNavigate } from "react-router-dom";
-import { PopupContext } from "../context/popup-context";
+import { hideMenu } from "../features/popup/popupSlice";
 
 const Modal = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const loggedInUserId = useSelector((state: RootState) => state.auth.session?.user.id);
   const [visibility, setVisibility] = useState(false);
   const [enteredPlaylistName, setEnteredPlaylistName] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const { onHideMenu } = useContext(PopupContext);
 
   const addPlaylist = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -42,8 +42,8 @@ const Modal = () => {
 
   useEffect(() => {
     document.body.style.overflowY = visibility ? "hidden" : "scroll";
-    onHideMenu();
-  }, [visibility, onHideMenu]);
+    dispatch(hideMenu());
+  }, [visibility, dispatch]);
 
   return (
     <>

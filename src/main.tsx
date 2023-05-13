@@ -13,7 +13,6 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import PlaylistPage from "./pages/PlaylistPage";
 import { getUserPlaylists } from "./features/playlists/playlistsSlice";
 import { getSession } from "./features/auth/authSlice";
-import { PopupContextProvider } from "./context/popup-context";
 import Modal from "./components/Modal";
 
 store.dispatch(getSession());
@@ -60,9 +59,7 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <Provider store={store}>
-      <PopupContextProvider>
-        <RouterProvider router={router} />
-      </PopupContextProvider>
+      <RouterProvider router={router} />
     </Provider>
   </React.StrictMode>,
 );

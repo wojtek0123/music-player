@@ -6,12 +6,12 @@ import {
 } from "../features/playlists/playlistsSlice";
 import { Icon } from "@iconify/react";
 import styles from "../styles/Song.module.css";
-import { useContext, useEffect } from "react";
-import { PopupContext } from "../context/popup-context";
+import { useEffect } from "react";
 import { supabase } from "../lib/supabase";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../app/store";
 import { Link } from "react-router-dom";
+import { hideMenu, toggleMenu } from "../features/popup/popupSlice";
 
 interface SongProps {
   song: Song;
@@ -23,17 +23,13 @@ interface SongProps {
 
 const Song = ({ song, size, details, playlistOwnerId, playlistId }: SongProps) => {
   const dispatch = useDispatch<AppDispatch>();
-  const {
-    popupMenuVisibility: { show, songId },
-    onToggleMenu,
-    onHideMenu,
-  } = useContext(PopupContext);
   const userPlaylists = useSelector((state: RootState) => state.playlists.userPlaylists);
   const likedSongsPlaylist = useSelector((state: RootState) => state.playlists.likedSongsPlaylist);
   const userPlaylistsExceptLikedSongs = useSelector(
     (state: RootState) => state.playlists.userPlaylistsExpectLikedSongs,
   );
   const loggedInUserId = useSelector((state: RootState) => state.auth.session?.user.id);
+  const { songId, show } = useSelector((state: RootState) => state.popupMenu.visibility);
 
   const getSongTime = () => {
     const hours = Math.floor(song.time / 3600);
@@ -51,7 +47,8 @@ const Song = ({ song, size, details, playlistOwnerId, playlistId }: SongProps) =
       console.error(error.message);
       return;
     }
-    onHideMenu();
+    dispatch(hideMenu());
+    // onHideMenu();
     dispatch(filterOutSong({ songId: song.id, playlistId: playlistId ?? "" }));
   };
 
@@ -59,7 +56,8 @@ const Song = ({ song, size, details, playlistOwnerId, playlistId }: SongProps) =
     // todo: after adding a song to playlist pop up should disappear
     const filteredPlaylist = userPlaylists.find((playlist) => playlist.id === playlistId);
 
-    onHideMenu();
+    // onHideMenu();
+    dispatch(hideMenu());
     if (!filteredPlaylist) return;
 
     if (filteredPlaylist.songs.findIndex((s) => s.id === song.id) !== -1) {
@@ -109,9 +107,10 @@ const Song = ({ song, size, details, playlistOwnerId, playlistId }: SongProps) =
 
   useEffect(() => {
     return () => {
-      onHideMenu();
+      dispatch(hideMenu());
+      // onHideMenu();
     };
-  }, [onHideMenu]);
+  }, [dispatch]);
 
   return (
     <div className={styles.container}>
@@ -147,7 +146,7 @@ const Song = ({ song, size, details, playlistOwnerId, playlistId }: SongProps) =
             type="button"
             aria-label="Context menu"
             className={styles["context-menu-btn"]}
-            onClick={() => onToggleMenu(song.id)}
+            onClick={() => dispatch(toggleMenu(song.id))}
           >
             <Icon icon="mdi:dots-vertical" color="white" width="100%" />
           </button>
