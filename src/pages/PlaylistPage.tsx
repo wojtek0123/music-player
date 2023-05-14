@@ -85,6 +85,7 @@ const PlaylistPage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     if (!playlistId) return;
+
     dispatch(getPlaylist(playlistId));
   }, [dispatch, playlistId]);
 

@@ -3,6 +3,8 @@ import {
   filterOutSong,
   addToLikedSongsPlaylist,
   removeFromLikedSongsPlaylist,
+  addSongToPlaylist,
+  removeSongFromSelectedPlaylist,
 } from "../features/playlists/playlistsSlice";
 import { Icon } from "@iconify/react";
 import styles from "../styles/Song.module.css";
@@ -48,7 +50,6 @@ const Song = ({ song, size, details, playlistOwnerId, playlistId }: SongProps) =
       return;
     }
     dispatch(hideMenu());
-    // onHideMenu();
     dispatch(filterOutSong({ songId: song.id, playlistId: playlistId ?? "" }));
   };
 
@@ -56,9 +57,11 @@ const Song = ({ song, size, details, playlistOwnerId, playlistId }: SongProps) =
     // todo: after adding a song to playlist pop up should disappear
     const filteredPlaylist = userPlaylists.find((playlist) => playlist.id === playlistId);
 
-    // onHideMenu();
     dispatch(hideMenu());
-    if (!filteredPlaylist) return;
+
+    if (!filteredPlaylist) {
+      return;
+    }
 
     if (filteredPlaylist.songs.findIndex((s) => s.id === song.id) !== -1) {
       // todo: Notify a user that this song is already in liked playlist
@@ -71,6 +74,8 @@ const Song = ({ song, size, details, playlistOwnerId, playlistId }: SongProps) =
       console.error(error.message);
       return;
     }
+
+    dispatch(addSongToPlaylist({ playlistId, song }));
   };
 
   const addToLikedSongs = async () => {
@@ -95,6 +100,10 @@ const Song = ({ song, size, details, playlistOwnerId, playlistId }: SongProps) =
       return;
     }
     dispatch(removeFromLikedSongsPlaylist(song.id));
+
+    if (playlistId === likedSongsPlaylist?.id) {
+      dispatch(removeSongFromSelectedPlaylist(song.id));
+    }
   };
 
   const isSongIncluded = () => {

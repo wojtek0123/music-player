@@ -55,9 +55,6 @@ export const playlistsSlice = createSlice({
   name: "playlists",
   initialState,
   reducers: {
-    setSelectedPlaylist: (state, actions: PayloadAction<Playlist>) => {
-      state.selectedPlaylist = actions.payload;
-    },
     filterOutSong: (state, actions: PayloadAction<{ songId: string; playlistId: string }>) => {
       const foundPlaylist = state.userPlaylists.find((playlist) => playlist.id === actions.payload.playlistId);
       if (!foundPlaylist) return;
@@ -70,10 +67,20 @@ export const playlistsSlice = createSlice({
       const filterOutPlaylist = state.userPlaylists.filter((playlist) => playlist.id !== foundPlaylist.id);
 
       state.userPlaylists = [...filterOutPlaylist, foundPlaylist];
+    },
+    addSongToPlaylist: (state, action: PayloadAction<{ playlistId: string; song: Song }>) => {
+      const foundPlaylistIndex = state.userPlaylists.findIndex((playlist) => playlist.id === action.payload.playlistId);
 
-      state.selectedPlaylist = state.userPlaylists
-        .filter((playlist) => playlist.id === state.selectedPlaylist?.id)
-        .at(0);
+      state.userPlaylists[foundPlaylistIndex].songs = [
+        ...state.userPlaylists[foundPlaylistIndex].songs,
+        action.payload.song,
+      ];
+    },
+    removeSongFromSelectedPlaylist: (state, action: PayloadAction<string>) => {
+      if (!state.selectedPlaylist) return;
+      if (!state.selectedPlaylist.songs) return;
+
+      state.selectedPlaylist.songs = state.selectedPlaylist?.songs.filter((song) => song.id !== action.payload);
     },
     addToLikedSongsPlaylist: (state, action: PayloadAction<Song>) => {
       if (state.likedSongsPlaylist) {
@@ -182,6 +189,8 @@ export const {
   addToLikedSongsPlaylist,
   filterOutPlaylist,
   addPlaylistToCurrentFetched,
+  addSongToPlaylist,
+  removeSongFromSelectedPlaylist,
 } = playlistsSlice.actions;
 
 export default playlistsSlice.reducer;
