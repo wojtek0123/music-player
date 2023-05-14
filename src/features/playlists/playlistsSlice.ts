@@ -92,6 +92,10 @@ export const playlistsSlice = createSlice({
         (playlist) => playlist.id !== action.payload,
       );
     },
+    addPlaylistToCurrentFetched: (state, action: PayloadAction<Playlist>) => {
+      state.userPlaylists = [...state.userPlaylists, action.payload];
+      state.userPlaylistsExpectLikedSongs = [...state.userPlaylistsExpectLikedSongs, action.payload];
+    },
   },
   extraReducers(builder) {
     builder.addCase(getUserPlaylists.fulfilled, (state, action) => {
@@ -172,7 +176,12 @@ export const getUserPlaylists = createAsyncThunk<Playlist[], string>(
   },
 );
 
-export const { filterOutSong, removeFromLikedSongsPlaylist, addToLikedSongsPlaylist, filterOutPlaylist } =
-  playlistsSlice.actions;
+export const {
+  filterOutSong,
+  removeFromLikedSongsPlaylist,
+  addToLikedSongsPlaylist,
+  filterOutPlaylist,
+  addPlaylistToCurrentFetched,
+} = playlistsSlice.actions;
 
 export default playlistsSlice.reducer;

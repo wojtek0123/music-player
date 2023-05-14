@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../app/store";
 import { filterOutPlaylist, getPlaylist } from "../features/playlists/playlistsSlice";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Song from "../components/Song";
 import styles from "../styles/PlaylistPage.module.css";
 import backgroundImage from "../assets/turntable.jpg";
@@ -18,6 +18,7 @@ const PlaylistPage = () => {
   const fetchedPlaylist = useSelector((state: RootState) => state.playlists.selectedPlaylist);
   const loggedInUserId = useSelector((state: RootState) => state.auth.session?.user.id);
   const likedPlaylists = useSelector((state: RootState) => state.likedPlaylists.likedPlaylists);
+  const errorMessage = useSelector((state: RootState) => state.playlists.selectedPlaylistErrorMsg);
 
   const getSongsTime = () => {
     const songsLengthInSeconds = fetchedPlaylist?.songs.reduce((prev, curr) => prev + curr.time, 0) ?? 0;
@@ -26,6 +27,7 @@ const PlaylistPage = () => {
     const minutes = Math.floor((songsLengthInSeconds % 3600) / 60);
     const seconds = Math.floor(songsLengthInSeconds % 60);
 
+    if (hours === 0 && minutes === 0 && seconds === 0) return "0s";
     if (hours >= 1) return `${hours}hr ${minutes}min ${seconds}s`;
     if (minutes >= 1) return `${minutes}min ${seconds}s`;
     if (seconds >= 1) return `${seconds}s`;
@@ -87,11 +89,18 @@ const PlaylistPage = () => {
   }, [dispatch, playlistId]);
 
   if (status === "loading") {
-    return <div>Loading...</div>;
+    return <div className={styles.message}>Loading...</div>;
   }
 
   if (status === "failed") {
-    return <div>Something went wrong! Try later</div>;
+    return (
+      <div className={styles.message}>
+        <p>{errorMessage}</p>
+        <Link className={styles["message-link"]} to="/">
+          Home
+        </Link>
+      </div>
+    );
   }
 
   return (
@@ -144,6 +153,7 @@ const PlaylistPage = () => {
             />
           ))}
         </ul>
+        {fetchedPlaylist?.songs.length === 0 && <div className={styles.text}>Add songs to this playlist!</div>}
       </main>
     </div>
   );

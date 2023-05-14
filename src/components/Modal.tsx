@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../app/store";
 import { useNavigate } from "react-router-dom";
 import { hideMenu } from "../features/popup/popupSlice";
+import { addPlaylistToCurrentFetched, Playlist } from "../features/playlists/playlistsSlice";
 
 const Modal = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -24,13 +25,21 @@ const Modal = () => {
     if (!loggedInUserId) navigate("/login");
     if (enteredPlaylistName.length === 0) return;
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("playlist")
-      .insert({ name: enteredPlaylistName, user_id: loggedInUserId ?? "" });
+      .insert({ name: enteredPlaylistName, user_id: loggedInUserId ?? "" })
+      .select("id, name, user_id, created_at, songs:song( *, author ( * ) )");
 
     if (error) {
       setErrorMessage(error.message);
     }
+
+    if (!data || data.length === 0) {
+      setErrorMessage("Something went wrong. Try later!");
+    }
+
+    dispatch(addPlaylistToCurrentFetched(data?.at(0) as Playlist));
+    closeModal();
   };
 
   const closeModal = () => {
