@@ -8,12 +8,11 @@
 }
 
 :root {
-  --background-color: #15191f;
-  --background-secondary-color: #010b02;
-  --button-background-color: #017aff;
+  --primary-color: #000;
+  --secondary-color: #c33764;
+  --background-color: #010b02;
   --font-color: #fff;
   --secondary-font-color: #8e9196;
-  --black-color: #000;
   --rounded: 0.8rem;
 }
 
@@ -24,7 +23,6 @@ body {
   background: -webkit-linear-gradient(to left, #1d2671, #c33764);
   background: linear-gradient(to left, #1d2671, #c33764);
   color: var(--font-color);
-  overflow-x: hidden;
   position: relative;
   z-index: 0;
 }

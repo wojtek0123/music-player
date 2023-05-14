@@ -3,28 +3,43 @@ import React, { useEffect, useState } from "react";
 
 import styles from "../styles/Modal.module.css";
 import { supabase } from "../lib/supabase";
-import { useSelector } from "react-redux";
-import { RootState } from "../app/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../app/store";
+import { useNavigate } from "react-router-dom";
+import { hideMenu } from "../features/popup/popupSlice";
+import { addPlaylistToCurrentFetched, Playlist } from "../features/playlists/playlistsSlice";
 
 const Modal = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const loggedInUserId = useSelector((state: RootState) => state.auth.session?.user.id);
   const [visibility, setVisibility] = useState(false);
   const [enteredPlaylistName, setEnteredPlaylistName] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const session = useSelector((state: RootState) => state.auth.session);
 
   const addPlaylist = async (event: React.FormEvent) => {
     event.preventDefault();
-
     setIsSubmitted(true);
 
+    if (!loggedInUserId) navigate("/login");
     if (enteredPlaylistName.length === 0) return;
 
-    const { error } = await supabase.from("playlist").insert({ name: enteredPlaylistName, user_id: session?.user.id });
+    const { data, error } = await supabase
+      .from("playlist")
+      .insert({ name: enteredPlaylistName, user_id: loggedInUserId ?? "" })
+      .select("id, name, user_id, created_at, songs:song( *, author ( * ) )");
 
     if (error) {
       setErrorMessage(error.message);
     }
+
+    if (!data || data.length === 0) {
+      setErrorMessage("Something went wrong. Try later!");
+    }
+
+    dispatch(addPlaylistToCurrentFetched(data?.at(0) as Playlist));
+    closeModal();
   };
 
   const closeModal = () => {
@@ -36,7 +51,8 @@ const Modal = () => {
 
   useEffect(() => {
     document.body.style.overflowY = visibility ? "hidden" : "scroll";
-  }, [visibility]);
+    dispatch(hideMenu());
+  }, [visibility, dispatch]);
 
   return (
     <>

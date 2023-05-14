@@ -11,13 +11,14 @@ import AuthGuard from "./components/AuthGuard";
 import NotFoundPage from "./pages/NotFoundPage";
 import ErrorBoundary from "./components/ErrorBoundary";
 import PlaylistPage from "./pages/PlaylistPage";
-import { getPlaylists } from "./features/playlists/playlistsSlice";
+import { getUserPlaylists } from "./features/playlists/playlistsSlice";
 import { getSession } from "./features/auth/authSlice";
-import { PopupContextProvider } from "./context/popup-context";
 import Modal from "./components/Modal";
+import { getUserLikedPlaylists } from "./features/liked-playlists/likedPlaylists";
 
 store.dispatch(getSession());
-store.dispatch(getPlaylists());
+store.dispatch(getUserPlaylists(""));
+store.dispatch(getUserLikedPlaylists());
 
 const router = createBrowserRouter([
   {
@@ -60,9 +61,7 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <Provider store={store}>
-      <PopupContextProvider>
-        <RouterProvider router={router} />
-      </PopupContextProvider>
+      <RouterProvider router={router} />
     </Provider>
   </React.StrictMode>,
 );

@@ -5,10 +5,12 @@ import { supabase } from "../lib/supabase";
 import { isTextLengthEqualZero } from "../utils/isTextLengthEqualZero";
 import { useDispatch } from "react-redux";
 import { setSession } from "../features/auth/authSlice";
+import { AppDispatch } from "../app/store";
+import { getUserPlaylists } from "../features/playlists/playlistsSlice";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const [enteredUsername, setEnteredUsername] = useState("");
   const [enteredEmail, setEnteredEmail] = useState("");
   const [enteredPassword, setEnteredPassword] = useState("");
@@ -31,7 +33,10 @@ const RegisterPage = () => {
 
     setStatus("loading");
 
-    const { data, error } = await supabase.auth.signUp({
+    const {
+      data: { session },
+      error,
+    } = await supabase.auth.signUp({
       email: enteredEmail,
       password: enteredPassword,
       options: {
@@ -49,8 +54,22 @@ const RegisterPage = () => {
       return;
     }
 
-    dispatch(setSession(data.session));
+    if (!session) return;
+
+    dispatch(setSession(session));
+
+    const { error: playlistError } = await supabase
+      .from("playlist")
+      .insert({ name: "liked songs", user_id: session.user.id });
+
+    if (playlistError) {
+      setErrorMessage(playlistError.message);
+      setStatus("error");
+      return;
+    }
+
     setStatus("ok");
+    dispatch(getUserPlaylists(session.user.id));
     navigate("/");
   };
 
@@ -115,7 +134,7 @@ const RegisterPage = () => {
           onChange={(event) => setEnteredConfirmPassword(event.target.value)}
           value={enteredConfirmPassword}
           className={styles.input}
-          placeholder="Password"
+          placeholder="Confirm password"
           aria-label="Confirm password"
         />
         {isSubmitted && enteredConfirmPassword.length === 0 && status === "ok" && (
