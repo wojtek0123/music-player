@@ -19,6 +19,7 @@ const PlaylistPage = () => {
   const loggedInUserId = useSelector((state: RootState) => state.auth.session?.user.id);
   const likedPlaylists = useSelector((state: RootState) => state.likedPlaylists.likedPlaylists);
   const errorMessage = useSelector((state: RootState) => state.playlists.selectedPlaylistErrorMsg);
+  const likedSongPlaylistId = useSelector((state: RootState) => state.playlists.likedSongsPlaylist?.id);
 
   const getSongsTime = () => {
     const songsLengthInSeconds = fetchedPlaylist?.songs.reduce((prev, curr) => prev + curr.time, 0) ?? 0;
@@ -119,7 +120,7 @@ const PlaylistPage = () => {
             <button type="button" aria-label="Play" className={styles.btn}>
               <Icon icon="material-symbols:play-circle-rounded" width="100%" color="white" />
             </button>
-            {loggedInUserId && (
+            {loggedInUserId && fetchedPlaylist?.user_id !== loggedInUserId && (
               <>
                 {!isPlaylistIncluded() && (
                   <button type="button" onClick={addToLikedPlaylist} aria-label="Like" className={styles.btn}>
