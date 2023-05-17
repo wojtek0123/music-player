@@ -8,6 +8,7 @@ import { AppDispatch, RootState } from "../app/store";
 import { useNavigate } from "react-router-dom";
 import { hideMenu } from "../features/popup/popupSlice";
 import { addPlaylistToCurrentFetched, Playlist } from "../features/playlists/playlistsSlice";
+import { Icon } from "@iconify/react";
 
 const Modal = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -57,7 +58,7 @@ const Modal = () => {
   return (
     <>
       <button className={styles["open-modal-btn"]} type="button" onClick={() => setVisibility(true)}>
-        Add playlist
+        <Icon icon="ic:baseline-plus" color="white" />
       </button>
       {visibility &&
         createPortal(

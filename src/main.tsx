@@ -13,8 +13,8 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import PlaylistPage from "./pages/PlaylistPage";
 import { getUserPlaylists } from "./features/playlists/playlistsSlice";
 import { getSession } from "./features/auth/authSlice";
-import Modal from "./components/Modal";
 import { getUserLikedPlaylists } from "./features/liked-playlists/likedPlaylists";
+import Layout from "./components/Layout";
 
 store.dispatch(getSession());
 store.dispatch(getUserPlaylists(""));
@@ -25,36 +25,42 @@ const router = createBrowserRouter([
     path: "",
     element: (
       <ErrorBoundary>
-        <HomePage />
-        <Modal />
-      </ErrorBoundary>
-    ),
-  },
-  {
-    path: "playlist/:playlistId",
-    element: <PlaylistPage />,
-  },
-  {
-    path: "",
-    element: (
-      <ErrorBoundary>
-        <AuthGuard />
+        <Layout></Layout>
       </ErrorBoundary>
     ),
     children: [
       {
-        path: "/login",
-        element: <LoginPage />,
+        path: "",
+        element: <HomePage />,
       },
       {
-        path: "/register",
-        element: <RegisterPage />,
+        path: "playlist/:playlistId",
+        element: <PlaylistPage />,
+      },
+
+      {
+        path: "*",
+        element: <NotFoundPage />,
       },
     ],
   },
   {
-    path: "*",
-    element: <NotFoundPage />,
+    path: "/login",
+    element: (
+      <ErrorBoundary>
+        <AuthGuard />
+        <LoginPage />
+      </ErrorBoundary>
+    ),
+  },
+  {
+    path: "/register",
+    element: (
+      <ErrorBoundary>
+        <AuthGuard />
+        <RegisterPage />
+      </ErrorBoundary>
+    ),
   },
 ]);
 
