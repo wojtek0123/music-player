@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import styles from "../styles/Section.module.css";
-import { Playlist } from "../features/playlists/playlistsSlice";
 import Song from "./Song";
+import { Playlist } from "../helpers/types";
 
 interface SectionProps {
   playlist: Playlist | undefined;

@@ -1,8 +1,8 @@
 import styles from "../styles/Home.module.css";
 import Section from "../components/Section";
 import { useEffect, useState } from "react";
-import { Playlist, Status } from "../features/playlists/playlistsSlice";
 import { supabase } from "../lib/supabase";
+import { Playlist, Status } from "../helpers/types";
 
 const HomePage = () => {
   const [defaultPlaylists, setDefaultPlaylists] = useState<Playlist[]>([]);

@@ -1,5 +1,4 @@
 import {
-  Song,
   filterOutSong,
   addToLikedSongsPlaylist,
   removeFromLikedSongsPlaylist,
@@ -14,9 +13,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../app/store";
 import { Link } from "react-router-dom";
 import { hideMenu, toggleMenu } from "../features/popup/popupSlice";
+import { Song as SongType } from "../helpers/types";
 
 interface SongProps {
-  song: Song;
+  song: SongType;
   size: "wide" | "standard";
   details: boolean;
   playlistOwnerId?: string;
