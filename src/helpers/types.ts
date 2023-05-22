@@ -4,14 +4,16 @@ export interface Song {
   author_id: string;
   created_at: string;
   link: string;
-  album?: string;
+  time: number;
   author?: Author;
 }
 
 export interface Playlist {
   id: string;
   name: string;
+  user_id: string;
   songs: Song[];
+  created_at: string;
 }
 
 export interface Author {
