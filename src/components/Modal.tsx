@@ -7,8 +7,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../app/store";
 import { useNavigate } from "react-router-dom";
 import { hideMenu } from "../features/popup/popupSlice";
-import { addPlaylistToCurrentFetched, Playlist } from "../features/playlists/playlistsSlice";
+import { addPlaylistToCurrentFetched } from "../features/playlists/playlistsSlice";
 import { Icon } from "@iconify/react";
+import { Playlist } from "../helpers/types";
 
 const Modal = () => {
   const dispatch = useDispatch<AppDispatch>();

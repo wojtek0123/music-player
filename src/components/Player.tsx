@@ -20,7 +20,7 @@ export const Player = ({ song }: PlayerProps): JSX.Element => {
       <Icon icon="zondicons:music-album" color="white" />
       <div className="songInfo">
         <div>{song?.title ?? "unknown"}</div>
-        <div>{song?.author ?? "unknown"}</div>
+        <div>{song?.author?.name ?? "unknown"}</div>
         <p>isPlaying: {isPlaying.valueOf()}</p>
       </div>
 

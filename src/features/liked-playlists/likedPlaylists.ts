@@ -1,7 +1,7 @@
-import { Playlist, Status } from "../playlists/playlistsSlice";
 // eslint-disable-next-line import/named
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { supabase } from "../../lib/supabase";
+import { Playlist, Status } from "../../helpers/types";
 
 interface LikedPlaylistsState {
   likedPlaylists: Playlist[];

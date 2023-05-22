@@ -20,3 +20,5 @@ export interface Author {
   id: string;
   name: string;
 }
+
+export type Status = "idle" | "loading" | "failed" | "succeeded";
