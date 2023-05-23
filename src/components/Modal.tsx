@@ -10,6 +10,8 @@ import { hideMenu } from "../features/popup/popupSlice";
 import { addPlaylistToCurrentFetched } from "../features/playlists/playlistsSlice";
 import { Icon } from "@iconify/react";
 import { Playlist } from "../helpers/types";
+import { toast } from "react-toastify";
+import { options } from "./Song";
 
 const Modal = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -41,6 +43,7 @@ const Modal = () => {
     }
 
     dispatch(addPlaylistToCurrentFetched(data?.at(0) as Playlist));
+    toast.success("Successfully added a new playlist", options);
     closeModal();
   };
 

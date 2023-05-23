@@ -7,6 +7,9 @@ import Modal from "./Modal";
 import { FormEvent, useState } from "react";
 import { Icon } from "@iconify/react";
 import { setSession } from "../features/auth/authSlice";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.min.css";
+import { options } from "./Song";
 
 const Layout = () => {
   const navigate = useNavigate();
@@ -20,6 +23,7 @@ const Layout = () => {
   const onLogOut = async () => {
     await supabase.auth.signOut();
     dispatch(setSession(null));
+    toast.info("Successfully logged out", options);
     navigate("/");
   };
 
@@ -42,7 +46,8 @@ const Layout = () => {
   };
 
   return (
-    <>
+    <div>
+      <ToastContainer />
       <nav className={styles.nav}>
         <button type="button" className={styles.hamburger} onClick={() => setVisibility((prevState) => !prevState)}>
           <Icon icon="pajamas:hamburger" color="white" width="100%" />
@@ -107,7 +112,7 @@ const Layout = () => {
         </aside>
         <Outlet />
       </main>
-    </>
+    </div>
   );
 };
 
