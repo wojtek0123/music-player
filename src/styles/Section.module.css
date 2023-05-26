@@ -49,10 +49,6 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(35rem, 1fr));
   }
-
-  .show-more-btn {
-    max-width: 50rem;
-  }
 }
 
 @media (min-width: 1920px) {

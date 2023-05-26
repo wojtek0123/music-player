@@ -43,13 +43,27 @@ const Layout = () => {
     });
 
     setErrorMessage("");
+
+    if (visibility) {
+      toggleHamburgerMenu();
+    }
+  };
+
+  const toggleHamburgerMenu = () => {
+    setVisibility((prevState) => !prevState);
+
+    if (!visibility) {
+      document.body.style.overflowY = "hidden";
+    } else {
+      document.body.style.overflowY = "auto";
+    }
   };
 
   return (
     <div>
       <ToastContainer />
       <nav className={styles.nav}>
-        <button type="button" className={styles.hamburger} onClick={() => setVisibility((prevState) => !prevState)}>
+        <button type="button" className={styles.hamburger} onClick={toggleHamburgerMenu}>
           <Icon icon="pajamas:hamburger" color="white" width="100%" />
         </button>
 
@@ -60,7 +74,7 @@ const Layout = () => {
       <main className={styles.main}>
         <aside className={visibility ? styles.aside + " " + styles.show : styles.aside}>
           <div className={styles.container}>
-            <Link className={styles.logo} to="/">
+            <Link className={styles.logo} to="/" onClick={toggleHamburgerMenu}>
               Music Streamer
             </Link>
             <form className={styles.form} onSubmit={onSubmit}>
@@ -100,7 +114,7 @@ const Layout = () => {
                 <ul className={styles.list}>
                   {userPlaylists.map((userPlaylist) => (
                     <li className={styles["menu-field"]} key={userPlaylist.id}>
-                      <Link className={styles.link} to={"/playlist/" + userPlaylist.id}>
+                      <Link onClick={toggleHamburgerMenu} className={styles.link} to={"/playlist/" + userPlaylist.id}>
                         {userPlaylist.name}
                       </Link>
                     </li>

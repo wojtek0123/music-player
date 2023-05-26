@@ -11,13 +11,12 @@
   align-items: center;
   justify-content: center;
   background-color: var(--background-color);
-  padding: 1rem;
   position: fixed;
-  top: 0;
+  top: 2rem;
   left: 0;
   bottom: 0;
   min-width: 100%;
-  z-index: 1;
+  z-index: 3;
   transform: translateX(-100%);
   transition: transform 0.2s;
 }
@@ -27,6 +26,9 @@
   flex-direction: column;
   gap: 0.1rem;
   width: 100%;
+  height: 100svh;
+  padding: 1rem;
+  overflow-y: auto;
 }
 
 .aside.show {
@@ -55,6 +57,7 @@
 
 .list {
   list-style-type: none;
+  overflow-y: auto;
 }
 
 .menu-field:hover {
@@ -77,12 +80,15 @@
 .nav {
   background-color: var(--background-color);
   display: grid;
-  grid-template-columns: 1rem 1fr 1rem;
-  z-index: 2;
+  grid-template-columns: 1.5rem 1fr 1.5rem;
+  z-index: 4;
   position: sticky;
   top: 0;
   left: 0;
   right: 0;
+  padding: 0.5rem 1rem;
+
+
 }
 
 .search-btn {
@@ -95,8 +101,10 @@
   text-decoration: none;
   color: var(--font-color);
 }
+
 .header-container {
   margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .input {
@@ -164,8 +172,15 @@
     position: static;
     opacity: 0.85;
     width: 100%;
+    height: 100svh;
     transform: translateX(0);
     align-items: flex-start;
     justify-content: flex-start;
+  }
+
+  .container {
+    position: sticky;
+    top: 0;
+    height: 100svh;
   }
 }
