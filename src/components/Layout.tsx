@@ -7,6 +7,9 @@ import Modal from "./Modal";
 import { FormEvent, useState } from "react";
 import { Icon } from "@iconify/react";
 import { setSession } from "../features/auth/authSlice";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.min.css";
+import { options } from "./Song";
 
 const Layout = () => {
   const navigate = useNavigate();
@@ -20,6 +23,7 @@ const Layout = () => {
   const onLogOut = async () => {
     await supabase.auth.signOut();
     dispatch(setSession(null));
+    toast.info("Successfully logged out", options);
     navigate("/");
   };
 
@@ -39,12 +43,27 @@ const Layout = () => {
     });
 
     setErrorMessage("");
+
+    if (visibility) {
+      toggleHamburgerMenu();
+    }
+  };
+
+  const toggleHamburgerMenu = () => {
+    setVisibility((prevState) => !prevState);
+
+    if (!visibility) {
+      document.body.style.overflowY = "hidden";
+    } else {
+      document.body.style.overflowY = "auto";
+    }
   };
 
   return (
-    <>
+    <div>
+      <ToastContainer />
       <nav className={styles.nav}>
-        <button type="button" className={styles.hamburger} onClick={() => setVisibility((prevState) => !prevState)}>
+        <button type="button" className={styles.hamburger} onClick={toggleHamburgerMenu}>
           <Icon icon="pajamas:hamburger" color="white" width="100%" />
         </button>
 
@@ -55,7 +74,7 @@ const Layout = () => {
       <main className={styles.main}>
         <aside className={visibility ? styles.aside + " " + styles.show : styles.aside}>
           <div className={styles.container}>
-            <Link className={styles.logo} to="/">
+            <Link className={styles.logo} to="/" onClick={toggleHamburgerMenu}>
               Music Streamer
             </Link>
             <form className={styles.form} onSubmit={onSubmit}>
@@ -95,7 +114,7 @@ const Layout = () => {
                 <ul className={styles.list}>
                   {userPlaylists.map((userPlaylist) => (
                     <li className={styles["menu-field"]} key={userPlaylist.id}>
-                      <Link className={styles.link} to={"/playlist/" + userPlaylist.id}>
+                      <Link onClick={toggleHamburgerMenu} className={styles.link} to={"/playlist/" + userPlaylist.id}>
                         {userPlaylist.name}
                       </Link>
                     </li>
@@ -107,7 +126,7 @@ const Layout = () => {
         </aside>
         <Outlet />
       </main>
-    </>
+    </div>
   );
 };
 

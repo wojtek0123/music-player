@@ -14,6 +14,7 @@ import { AppDispatch, RootState } from "../app/store";
 import { Link } from "react-router-dom";
 import { hideMenu, toggleMenu } from "../features/popup/popupSlice";
 import { Song as SongType } from "../helpers/types";
+import { ToastOptions, toast } from "react-toastify";
 
 interface SongProps {
   song: SongType;
@@ -22,6 +23,17 @@ interface SongProps {
   playlistOwnerId?: string;
   playlistId?: string;
 }
+
+export const options: ToastOptions = {
+  position: "top-right",
+  autoClose: 5000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  pauseOnFocusLoss: true,
+  progress: undefined,
+  theme: "dark",
+};
 
 const Song = ({ song, size, details, playlistOwnerId, playlistId }: SongProps) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -46,11 +58,13 @@ const Song = ({ song, size, details, playlistOwnerId, playlistId }: SongProps) =
   const removeFromPlaylist = async () => {
     const { error } = await supabase.from("songs").delete().match({ song_id: song.id, playlist_id: playlistId });
     if (error) {
-      console.error(error.message);
+      toast.error(error.message, options);
       return;
     }
     dispatch(hideMenu());
     dispatch(filterOutSong({ songId: song.id, playlistId: playlistId ?? "" }));
+
+    toast.success("Successfully removed song from playlist", options);
   };
 
   const addToPlaylist = async (playlistId: string) => {
@@ -64,18 +78,18 @@ const Song = ({ song, size, details, playlistOwnerId, playlistId }: SongProps) =
     }
 
     if (filteredPlaylist.songs.findIndex((s) => s.id === song.id) !== -1) {
-      // todo: Notify a user that this song is already in liked playlist
-      console.log("You cannot added this song multiple times");
+      toast.info("You cannot added this song multiple times", options);
       return;
     }
 
     const { error } = await supabase.from("songs").insert({ song_id: song.id, playlist_id: playlistId });
     if (error) {
-      console.error(error.message);
+      toast.error(error.message, options);
       return;
     }
 
     dispatch(addSongToPlaylist({ playlistId, song }));
+    toast.success("Successfully added song to playlist", options);
   };
 
   const addToLikedSongs = async () => {
@@ -83,10 +97,11 @@ const Song = ({ song, size, details, playlistOwnerId, playlistId }: SongProps) =
       .from("songs")
       .insert({ song_id: song.id, playlist_id: likedSongsPlaylist?.id ?? "" });
     if (error) {
-      console.error(error.message);
+      toast.error(error.message, options);
       return;
     }
     dispatch(addToLikedSongsPlaylist(song));
+    toast.success("Successfully added song to liked songs", options);
   };
 
   const removeFromLikedSongs = async () => {
@@ -96,14 +111,17 @@ const Song = ({ song, size, details, playlistOwnerId, playlistId }: SongProps) =
       .match({ song_id: song.id, playlist_id: likedSongsPlaylist?.id ?? "" });
 
     if (error) {
-      console.error(error.message);
+      toast.error(error.message, options);
       return;
     }
+
     dispatch(removeFromLikedSongsPlaylist(song.id));
 
     if (playlistId === likedSongsPlaylist?.id) {
       dispatch(removeSongFromSelectedPlaylist(song.id));
     }
+
+    toast.success("Successfully removed song from playlist", options);
   };
 
   const isSongIncluded = () => {
@@ -117,7 +135,6 @@ const Song = ({ song, size, details, playlistOwnerId, playlistId }: SongProps) =
   useEffect(() => {
     return () => {
       dispatch(hideMenu());
-      // onHideMenu();
     };
   }, [dispatch]);
 
