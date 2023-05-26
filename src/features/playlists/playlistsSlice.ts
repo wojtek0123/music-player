@@ -2,6 +2,8 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { supabase } from "../../lib/supabase";
 import { Playlist, Song, Status } from "../../helpers/types";
+import { Simulate } from "react-dom/test-utils";
+import select = Simulate.select;
 
 export interface PlaylistsState {
   selectedPlaylist?: Playlist;
@@ -43,6 +45,9 @@ export const playlistsSlice = createSlice({
       const filterOutPlaylist = state.userPlaylists.filter((playlist) => playlist.id !== foundPlaylist.id);
 
       state.userPlaylists = [...filterOutPlaylist, foundPlaylist];
+      if (state.selectedPlaylist) {
+        state.selectedPlaylist = foundPlaylist;
+      }
     },
     addSongToPlaylist: (state, action: PayloadAction<{ playlistId: string; song: Song }>) => {
       const foundPlaylistIndex = state.userPlaylists.findIndex((playlist) => playlist.id === action.payload.playlistId);
@@ -53,9 +58,10 @@ export const playlistsSlice = createSlice({
       ];
     },
     removeSongFromSelectedPlaylist: (state, action: PayloadAction<string>) => {
+      console.log("log 1");
       if (!state.selectedPlaylist) return;
       if (!state.selectedPlaylist.songs) return;
-
+      console.log("log");
       state.selectedPlaylist.songs = state.selectedPlaylist?.songs.filter((song) => song.id !== action.payload);
     },
     addToLikedSongsPlaylist: (state, action: PayloadAction<Song>) => {
