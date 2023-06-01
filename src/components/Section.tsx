@@ -16,14 +16,14 @@ const Section = ({ playlist }: SectionProps) => {
 
   return (
     <section className={styles.section}>
-      <h2 className={styles.header}>{playlist.name}</h2>
+      {playlist.name.length !== 0 && <h2 className={styles.header}>{playlist.name}</h2>}
       <div className={styles.songs}>
         {playlist.songs.map((song, index) => {
           if (index < displayNumberOfSongs) {
             return (
               <Song
-                details={false}
-                size="standard"
+                details={true}
+                size="wide"
                 song={song}
                 playlistOwnerId={playlist.user_id}
                 playlistId={playlist.id}
@@ -32,6 +32,7 @@ const Section = ({ playlist }: SectionProps) => {
             );
           }
         })}
+        {playlist.songs.length === 0 && <div className={styles.song}>This playlist has no songs</div>}
         <Link to={"/playlist/" + playlist.id} className={styles["show-more-btn"]}>
           Show more
         </Link>
