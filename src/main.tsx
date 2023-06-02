@@ -15,6 +15,7 @@ import { getUserPlaylists } from "./features/playlists/playlistsSlice";
 import { getSession } from "./features/auth/authSlice";
 import { getUserLikedPlaylists } from "./features/liked-playlists/likedPlaylists";
 import Layout from "./components/Layout";
+import SearchPage from "./pages/SearchPage";
 
 store.dispatch(getSession());
 store.dispatch(getUserPlaylists(""));
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
       {
         path: "",
         element: <HomePage />,
+      },
+      {
+        path: "/search",
+        element: <SearchPage />
       },
       {
         path: "playlist/:playlistId",
