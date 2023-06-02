@@ -3,12 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../app/store";
 import { filterOutPlaylist, getPlaylist } from "../features/playlists/playlistsSlice";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import Song from "../components/Song";
+import Song, { options } from "../components/Song";
 import styles from "../styles/PlaylistPage.module.css";
 import backgroundImage from "../assets/turntable.jpg";
 import { Icon } from "@iconify/react";
 import { supabase } from "../lib/supabase";
 import { addPlaylistToLiked, removePlaylistFromLiked } from "../features/liked-playlists/likedPlaylists";
+import { toast } from "react-toastify";
 
 const PlaylistPage = () => {
   const { playlistId } = useParams();
@@ -41,11 +42,13 @@ const PlaylistPage = () => {
 
     if (error) {
       console.error(error.message);
+      toast.error(error.message, options);
       return;
     }
     if (!fetchedPlaylist) return;
 
     dispatch(addPlaylistToLiked(fetchedPlaylist));
+    toast.success("Successfully added playlist to liked");
   };
 
   const removeFromLikedPlaylist = async () => {
@@ -56,29 +59,37 @@ const PlaylistPage = () => {
 
     if (error) {
       console.error(error.message);
+      toast.error(error.message, options);
       return;
     }
     if (!playlistId) return;
 
     dispatch(removePlaylistFromLiked(playlistId));
+    toast.success("Successfully removed playlist from liked", options);
   };
 
   const removePlaylist = async () => {
-    if (!playlistId) return;
+    if (!playlistId) {
+      toast.info("Not found this playlist", options);
+      return;
+    }
 
     const { error } = await supabase.from("playlist").delete().match({ user_id: loggedInUserId, id: playlistId });
 
     if (error) {
-      console.error(error.message);
+      toast.error(error.message, options);
       return;
     }
 
     dispatch(filterOutPlaylist(playlistId));
+    toast.success("Successfully remove playlist", options);
     navigate("/");
   };
 
   const isPlaylistIncluded = () => {
-    if (!likedPlaylists) return false;
+    if (!likedPlaylists) {
+      return false;
+    }
 
     return likedPlaylists.findIndex((playlist) => playlist.id === playlistId) !== -1;
   };
