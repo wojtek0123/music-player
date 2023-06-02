@@ -21,7 +21,7 @@ body {
   max-width: 100vw;
   background: #c33764;
   background: -webkit-linear-gradient(to left, #1d2671, #c33764);
-  background: linear-gradient(to left, #1d2671, #c33764);
+  background: linear-gradient(-50deg, red, orange, yellow, green, blue, violet);
   color: var(--font-color);
   overflow-x: hidden;
   position: relative;

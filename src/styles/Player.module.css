@@ -1,5 +1,5 @@
 .container {
-  position: fixed;
+  position: sticky;
   bottom: 0;
   left: 0;
   right: 0;
@@ -12,7 +12,10 @@
   flex-direction: row;
   justify-content: space-between;
 
-  background-color: var( --button-background-color);
+  background-color: #050c08;
+  border-top: 1px solid #282828;
+  box-shadow: 0 0px 20px #282828;
+
 }
 
 .container button {
@@ -20,7 +23,8 @@
   border: none;
 }
 
-.container:is(.mobileFullscreenView) {
+.container.mobileFullscreenView {
+  position: fixed;
   top: 0;
 
   flex-direction: column;
@@ -35,7 +39,8 @@
 }
 
 .minimizeButtonIcon{
-
+  width: 3rem;
+  height: auto;
 }
 
 .songBox {
@@ -45,7 +50,7 @@
   
 }
 
-.container:is(.mobileFullscreenView) .songBox {
+.container.mobileFullscreenView .songBox {
   margin: 0 0 1rem;
   
   flex-direction: column;
@@ -56,18 +61,17 @@
   height: auto;
 }
 
-.container:is(.mobileFullscreenView) .albumCoverIcon{
+.container.mobileFullscreenView .albumCoverIcon{
   width: 80%;
   height: auto;
+  margin: 2rem 0 5vh;
 }
 
-.container:is(.mobileFullscreenView) .songInfoWithHeart {
-  
-
+.container.mobileFullscreenView .songInfoWithHeart {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: calc(80% - 2rem);
+  width: calc(80%);
 }
 
 .songInfo {
@@ -75,7 +79,7 @@
   
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  align-items: flex-start;
 }
 
 .songInfo > .title {
@@ -94,27 +98,126 @@
   height: auto;
 }
 
-.container:is(.mobileFullscreenView) .controls {
-  margin: 1rem 0 3rem;
+.container.mobileFullscreenView .controls {
+  margin: 0 0 3rem;
 
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.container:is(.mobileFullscreenView) .progressBar {
-  margin: 1rem 0;
-  width: 80%;
+.progressBarContainer {
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.container:is(.mobileFullscreenView) .controlButtons {
-  
+.container.mobileFullscreenView .progressBarContainer {
+  margin: 0rem 0 1rem;
+  width: 80%;
+  flex-direction: column;
+}
+
+.container.mobileFullscreenView .progressBar {
+  width: 100%;
+}
+
+.container.mobileFullscreenView .timeLabels {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.container:not(.mobileFullscreenView) .timeLabels{
+  display: none;
 }
 
 .container:not(.mobileFullscreenView) .progressBar ,
-.container:not(.mobileFullscreenView) .repeatButton ,
+.container:not(.mobileFullscreenView) .loopButton ,
 .container:not(.mobileFullscreenView) .skipBackButton ,
 .container:not(.mobileFullscreenView) .skipForwardButton ,
 .container:not(.mobileFullscreenView) .shuffleButton {
   display: none;
+}
+
+@media only screen and (min-width: 768px) {
+
+  .container:is(.mobileFullscreenView) .albumCoverIcon {
+    width: 60%;
+    height: auto;
+    margin: 2rem 0 5vh;
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+  .container ,
+  .container.mobileFullscreenView  {
+    position: fixed;
+    top: auto;
+  
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+
+  .minimizeButton {
+    display: none;
+  }
+
+  .songBox,
+  .container.mobileFullscreenView .songBox {
+    margin: 0;
+    
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .container:is(.mobileFullscreenView) .albumCoverIcon,
+  .container:not(.mobileFullscreenView) .albumCoverIcon{
+    width: 4rem;
+    height: auto;
+    margin: 0;
+  }
+  
+  .container .songInfoWithHeart {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: calc(80%);
+  }
+
+  .container .controls,
+  .container.mobileFullscreenView .controls {
+    margin: 0;
+  
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    flex-grow: 0.8;
+  }
+
+  .container .progressBar,
+  .container:not(.mobileFullscreenView) .progressBar  {
+    display: flex;
+  }
+
+  .container .controlButtons {
+    margin: 0.5rem 0;
+    display: flex;
+    flex-direction: row;
+  }
+
+  .container .loopButton,
+  .container:not(.mobileFullscreenView) .loopButton ,
+  .container .skipBackButton,
+  .container:not(.mobileFullscreenView) .skipBackButton ,
+  .container .skipForwardButton,
+  .container:not(.mobileFullscreenView) .skipForwardButton ,
+  .container .shuffleButton,
+  .container:not(.mobileFullscreenView) .shuffleButton {
+    display: block;
+  }
 }

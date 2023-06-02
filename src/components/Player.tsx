@@ -1,18 +1,29 @@
 import { Icon } from "@iconify/react";
 import type { AppDispatch, RootState } from "../app/store";
 import { useDispatch, useSelector } from "react-redux";
-import { pushHistory, playToggle, changeSong, popHistory } from "../features/player/playerSlice";
+import {
+  pushHistory,
+  playToggle,
+  changeSong,
+  popHistory,
+  shiftQueue,
+  putRandomSongFirstInQueue,
+} from "../features/player/playerSlice";
 import styles from "../styles/Player.module.css";
 import { useEffect, useRef, useState } from "react";
 
 export const Player = (): JSX.Element => {
   const currentSong = useSelector((state: RootState) => state.player.currentSong);
   const isPlaying = useSelector((state: RootState) => state.player.isPlaying);
-  const lastSongFromHistory = useSelector((state: RootState) => state.player.history.slice(-1)[0]);
+  const lastSongIdFromHistory = useSelector((state: RootState) => state.player.history.slice(-1)[0]);
+  const queue = useSelector((state: RootState) => state.player?.queue);
+  const firstSongIdFromQueue = useSelector((state: RootState) => state.player?.queue[0]);
 
   const dispatch = useDispatch<AppDispatch>();
 
   const [mobileFullscreenView, setMobileFullscreenView] = useState(false);
+  const [isLoopOn, setIsLoopOn] = useState(false);
+  const [isShuffleOn, setIsShuffleOn] = useState(false);
   const [songProgress, setSongProgress] = useState(0);
 
   const audioRef = useRef<HTMLAudioElement>(new Audio(currentSong?.link));
@@ -40,11 +51,25 @@ export const Player = (): JSX.Element => {
 
     intervalRef.current = window.setInterval(() => {
       if (audioRef.current.ended) {
-        // to next track
+        if (isPlaying) dispatch(playToggle());
+        if (intervalRef.current !== null) window.clearInterval(intervalRef.current);
+        if (currentSong !== undefined) return;
+        else onSkipForwardButtonClick();
       } else {
         setSongProgress(audioRef.current.currentTime);
       }
     }, 1000);
+  };
+
+  const strPadLeft = (string: string, pad: string, length: number) => {
+    return (new Array(length + 1).join(pad) + string).slice(-length);
+  };
+
+  const convertSeconds = (timeInSeconds: number) => {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = timeInSeconds - minutes * 60;
+
+    return strPadLeft(minutes.toString(), "0", 2) + ":" + strPadLeft(seconds.toString(), "0", 2);
   };
 
   const onScrub = (value: number) => {
@@ -54,11 +79,15 @@ export const Player = (): JSX.Element => {
     startTimer();
   };
 
+  const onLoopButtonClick = () => {
+    setIsLoopOn(!isLoopOn);
+  };
+
   const onSkipBackButtonClick = () => {
     if (songProgress < 1) {
-      const song = lastSongFromHistory;
-      if (song !== undefined) {
-        dispatch(changeSong(song.id));
+      const songId: string = lastSongIdFromHistory;
+      if (songId !== undefined) {
+        dispatch(changeSong(songId));
         dispatch(popHistory());
       } else {
         console.log("No songs left in history");
@@ -69,6 +98,31 @@ export const Player = (): JSX.Element => {
       setSongProgress(audioRef.current.currentTime);
       startTimer();
     }
+  };
+
+  const onSkipForwardButtonClick = () => {
+    if (isLoopOn) {
+      if (currentSong?.id !== undefined) dispatch(changeSong(currentSong?.id));
+    } else if (firstSongIdFromQueue === undefined) {
+      // if (intervalRef.current !== null) window.clearInterval(intervalRef.current);
+
+      audioRef.current.currentTime = audioRef.current.duration + 1;
+      console.log(audioRef.current.ended);
+      setSongProgress(audioRef.current.currentTime);
+    } else if (isShuffleOn && queue.length > 1) {
+      dispatch(pushHistory(currentSong?.id));
+      dispatch(putRandomSongFirstInQueue());
+      dispatch(changeSong(firstSongIdFromQueue));
+      dispatch(shiftQueue());
+    } else {
+      dispatch(pushHistory(currentSong?.id));
+      dispatch(changeSong(firstSongIdFromQueue));
+      dispatch(shiftQueue());
+    }
+  };
+
+  const onShuffleButtonClick = () => {
+    setIsShuffleOn(!isShuffleOn);
   };
 
   const minimizeButton = mobileFullscreenView ? (
@@ -105,7 +159,7 @@ export const Player = (): JSX.Element => {
   );
 
   const progressBar = (
-    <div>
+    <div className={styles.progressBarContainer}>
       <input
         className={styles.progressBar}
         type="range"
@@ -116,15 +170,19 @@ export const Player = (): JSX.Element => {
         onChange={(e) => onScrub(+e.target.value)}
       />
       <div className={styles.timeLabels}>
-        <p className={styles.currentSongTime}>{Math.round(songProgress)}</p>
-        <p className={styles.leftSongTime}></p>
+        <p className={styles.currentSongTime}>
+          {audioRef.current.duration ? convertSeconds(Math.round(songProgress)) : ""}
+        </p>
+        <p className={styles.leftSongTime}>
+          {audioRef.current.duration ? convertSeconds(Math.round(audioRef.current.duration - songProgress)) : ""}
+        </p>
       </div>
     </div>
   );
 
-  const repeatButton = (
-    <button className={styles.repeatButton} tabIndex={0}>
-      <Icon icon="ph:repeat-bold" color="white" width={50} />
+  const loopButton = (
+    <button className={styles.loopButton} tabIndex={0} onClick={onLoopButtonClick}>
+      <Icon icon="ph:repeat-bold" color={isLoopOn ? "c33764" : "ffffff"} width={50} />
     </button>
   );
 
@@ -160,14 +218,14 @@ export const Player = (): JSX.Element => {
   );
 
   const skipForwardButton = (
-    <button className={styles.skipForwardButton} tabIndex={0} onClick={() => dispatch(pushHistory(currentSong))}>
+    <button className={styles.skipForwardButton} tabIndex={0} onClick={onSkipForwardButtonClick}>
       <Icon icon="ph:skip-forward-fill" color="white" width={50} />
     </button>
   );
 
   const shuffleButton = (
-    <button className={styles.shuffleButton} tabIndex={0}>
-      <Icon icon="ph:shuffle-bold" color="white" width={50} />
+    <button className={styles.shuffleButton} tabIndex={0} onClick={onShuffleButtonClick}>
+      <Icon icon="ph:shuffle-bold" color={isShuffleOn ? "c33764" : "ffffff"} width={50} />
     </button>
   );
 
@@ -175,7 +233,7 @@ export const Player = (): JSX.Element => {
     <div className={styles.controls}>
       {progressBar}
       <div className={styles.controlButtons}>
-        {repeatButton}
+        {loopButton}
         {skipBackButton}
         {playToggleButton}
         {skipForwardButton}

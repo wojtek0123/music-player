@@ -7,8 +7,8 @@ const initialSong: Song | undefined = undefined;
 export interface PlayerState {
   currentSong?: Song;
   isPlaying: boolean;
-  queue: Array<Song>;
-  history: Array<Song>;
+  queue: string[];
+  history: string[];
   status: "idle" | "loading" | "failed" | "succeeded";
 }
 
@@ -39,6 +39,16 @@ export const playerSlice = createSlice({
     shiftQueue: (state) => {
       state.queue.shift();
     },
+    putRandomSongFirstInQueue: (state) => {
+      if (state.queue.length <= 1) return;
+
+      const randomIndex = Math.floor(Math.random() * (state.queue.length - 1)) + 1; // all indexes except 0
+
+      const temp = state.queue[0];
+
+      state.queue[0] = state.queue[randomIndex];
+      state.queue[randomIndex] = temp;
+    },
   },
   extraReducers(builder) {
     builder.addCase(changeSong.fulfilled, (state, actions) => {
@@ -62,6 +72,7 @@ export const changeSong = createAsyncThunk("player/changeSong", async (id: strin
   return song as Song;
 });
 
-export const { playToggle, pushHistory, popHistory, pushQueue, shiftQueue } = playerSlice.actions;
+export const { playToggle, pushHistory, popHistory, pushQueue, shiftQueue, putRandomSongFirstInQueue } =
+  playerSlice.actions;
 
 export default playerSlice.reducer;
