@@ -100,10 +100,6 @@ const SearchPage = () => {
 
   return (
     <div className={styles.container}>
-      {/* <Section playlist={} />
-      {fetchedSongs?.map((song) => (
-        <Song key={song.id} song={song} size="wide" details={true} />
-      ))} */}
       {fetchedSongs?.length !== 0 && <h3 className={styles.header}>Searched Songs</h3>}
       {fetchedSongs?.length !== 0 && <Section playlist={searchSongsPlaylist} />}
       {fetchedPlaylists.length !== 0 && <h3 className={styles.header}>Searched Playlists</h3>}
