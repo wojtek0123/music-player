@@ -60,7 +60,7 @@ const Layout = () => {
   };
 
   return (
-    <div>
+    <>
       <ToastContainer />
       <nav className={styles.nav}>
         <button type="button" className={styles.hamburger} onClick={toggleHamburgerMenu}>
@@ -124,9 +124,12 @@ const Layout = () => {
             )}
           </div>
         </aside>
-        <Outlet />
+        <div className={styles.outlet}>
+          <Outlet />
+        </div>
+        <div className={styles.player}>Player</div>
       </main>
-    </div>
+    </>
   );
 };
 
