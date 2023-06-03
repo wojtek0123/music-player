@@ -1,3 +1,7 @@
+:root {
+  --player-height: 8rem;
+}
+
 .main {
   display: flex;
   flex-direction: column;
@@ -163,7 +167,7 @@
   .main {
     display: grid;
     grid-template-columns: 20rem 1fr;
-    grid-template-rows: 90svh 1fr;
+    grid-template-rows: 1fr var(--player-height);
     position: relative;
     height: 100svh;
     overflow: hidden;
@@ -173,14 +177,13 @@
     position: static;
     opacity: 0.85;
     width: 100%;
-    /* grid-row: 1/ 2; */
     transform: translateX(0);
     align-items: flex-start;
     justify-content: flex-start;
   }
 
   .container {
-    height: max-content;
+    height: calc(100svh - var(--player-height));
   }
 
   .outlet {
@@ -190,10 +193,11 @@
 
   .player {
     width: 100%;
-    background-color: black;
+    background-color: red;
     grid-column: span 2;
     display: flex;
     align-items: center;
     justify-content: center;
+    height: var(--player-height);
   }
 }
