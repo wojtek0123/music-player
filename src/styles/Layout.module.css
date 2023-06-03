@@ -87,8 +87,6 @@
   left: 0;
   right: 0;
   padding: 0.5rem 1rem;
-
-
 }
 
 .search-btn {
@@ -165,22 +163,37 @@
   .main {
     display: grid;
     grid-template-columns: 20rem 1fr;
+    grid-template-rows: 90svh 1fr;
     position: relative;
+    height: 100svh;
+    overflow: hidden;
   }
 
   .aside {
     position: static;
     opacity: 0.85;
     width: 100%;
-    height: 100svh;
+    /* grid-row: 1/ 2; */
     transform: translateX(0);
     align-items: flex-start;
     justify-content: flex-start;
   }
 
   .container {
-    position: sticky;
-    top: 0;
-    height: 100svh;
+    height: max-content;
+  }
+
+  .outlet {
+    overflow-y: scroll;
+    height: 90svh;
+  }
+
+  .player {
+    width: 100%;
+    background-color: black;
+    grid-column: span 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
