@@ -242,7 +242,12 @@ export const Player = (): JSX.Element => {
     </div>
   );
 
-  if (currentSong?.link === undefined) return <></>;
+  if (currentSong?.link === undefined)
+    return (
+      <div
+        className={mobileFullscreenView ? `${styles.container} ${styles.mobileFullscreenView}` : styles.container}
+      ></div>
+    );
 
   return (
     <div

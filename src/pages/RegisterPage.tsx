@@ -5,10 +5,12 @@ import { supabase } from "../lib/supabase";
 import { isTextLengthEqualZero } from "../utils/isTextLengthEqualZero";
 import { useDispatch } from "react-redux";
 import { setSession } from "../features/auth/authSlice";
+import { AppDispatch } from "../app/store";
+import { getUserPlaylists } from "../features/playlists/playlistsSlice";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const [enteredUsername, setEnteredUsername] = useState("");
   const [enteredEmail, setEnteredEmail] = useState("");
   const [enteredPassword, setEnteredPassword] = useState("");
@@ -31,34 +33,44 @@ const RegisterPage = () => {
 
     setStatus("loading");
 
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email: enteredEmail,
-        password: enteredPassword,
-        options: {
-          data: {
-            username: enteredUsername,
-          },
+    const {
+      data: { session },
+      error,
+    } = await supabase.auth.signUp({
+      email: enteredEmail,
+      password: enteredPassword,
+      options: {
+        data: {
+          username: enteredUsername,
         },
-      });
+      },
+    });
 
-      clearInputs();
+    clearInputs();
 
-      if (error) {
-        setErrorMessage(error.message);
-        setStatus("error");
-        throw new Error(error.message);
-      }
-
-      dispatch(setSession(data.session));
-      setStatus("ok");
-      navigate("/");
-    } catch (error) {
+    if (error) {
+      setErrorMessage(error.message);
       setStatus("error");
-      if (error instanceof Error) {
-        console.error(error.message);
-      }
+      return;
     }
+
+    if (!session) return;
+
+    dispatch(setSession(session));
+
+    const { error: playlistError } = await supabase
+      .from("playlist")
+      .insert({ name: "liked songs", user_id: session.user.id });
+
+    if (playlistError) {
+      setErrorMessage(playlistError.message);
+      setStatus("error");
+      return;
+    }
+
+    setStatus("ok");
+    dispatch(getUserPlaylists(session.user.id));
+    navigate("/");
   };
 
   const checkEmailValidation = () => {
@@ -122,7 +134,7 @@ const RegisterPage = () => {
           onChange={(event) => setEnteredConfirmPassword(event.target.value)}
           value={enteredConfirmPassword}
           className={styles.input}
-          placeholder="Password"
+          placeholder="Confirm password"
           aria-label="Confirm password"
         />
         {isSubmitted && enteredConfirmPassword.length === 0 && status === "ok" && (

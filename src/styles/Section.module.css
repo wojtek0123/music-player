@@ -20,17 +20,33 @@
   border: none;
   width: 100%;
   border-radius: var(--rounded);
-  background-color: var(--background-secondary-color);
+  background-color: var(--background-color);
   color: var(--font-color);
-  font-size: 1.5rem;
+  font-size: 1rem;
   padding: 1.5rem 0;
   cursor: pointer;
-  display: block;
   text-decoration: none;
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0.85;
+}
+
+.song {
+  border: none;
+  border-radius: var(--rounded);
+  background-color: var(--background-color);
+  padding: 1rem;
+  opacity: 0.85;
+  gap: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+@media (min-width: 640px) {
+  .show-more-btn {
+    font-size: 1.3rem;
+  }
 }
 
 @media screen and (min-width: 1000px) {
@@ -44,11 +60,8 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(35rem, 1fr));
   }
-
-  .show-more-btn {
-    max-width: 50rem;
-  }
 }
+
 
 @media (min-width: 1920px) {
   .songs {

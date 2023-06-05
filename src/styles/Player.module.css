@@ -1,4 +1,5 @@
 .container {
+  z-index: 10;
   position: sticky;
   bottom: 0;
   left: 0;
@@ -12,9 +13,9 @@
   flex-direction: row;
   justify-content: space-between;
 
-  background-color: #050c08;
-  border-top: 1px solid #282828;
-  box-shadow: 0 0px 20px #282828;
+  background-color: var(--background-color);
+  border-top: 1px solid var(--shadow);
+  box-shadow: 0 0px 20px var(--shadow);
 
 }
 
@@ -154,8 +155,9 @@
 @media only screen and (min-width: 1024px) {
   .container ,
   .container.mobileFullscreenView  {
-    position: fixed;
+    position: static;
     top: auto;
+    height: 7.5rem;
   
     flex-direction: row;
     justify-content: flex-start;
@@ -202,6 +204,7 @@
   .container .progressBar,
   .container:not(.mobileFullscreenView) .progressBar  {
     display: flex;
+    width: 80%;
   }
 
   .container .controlButtons {

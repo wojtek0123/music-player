@@ -7,10 +7,12 @@ import { checkMinLength } from "../utils/minLength";
 import { isTextLengthEqualZero } from "../utils/isTextLengthEqualZero";
 import { useDispatch } from "react-redux";
 import { setSession } from "../features/auth/authSlice";
+import { getUserPlaylists } from "../features/playlists/playlistsSlice";
+import { AppDispatch } from "../app/store";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const [enteredEmail, setEnteredEmail] = useState("");
   const [enteredPassword, setEnteredPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -28,29 +30,26 @@ const LoginPage = () => {
 
     setStatus("loading");
 
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: enteredEmail,
-        password: enteredPassword,
-      });
+    const {
+      data: { session },
+      error,
+    } = await supabase.auth.signInWithPassword({
+      email: enteredEmail,
+      password: enteredPassword,
+    });
 
-      clearInputs();
+    clearInputs();
 
-      if (error) {
-        setErrorMessage(error.message);
-        setStatus("error");
-        throw new Error(error.message);
-      }
-
-      dispatch(setSession(data.session));
-      setStatus("ok");
-      navigate("/");
-    } catch (error) {
+    if (error) {
+      setErrorMessage(error.message);
       setStatus("error");
-      if (error instanceof Error) {
-        console.error(error.message);
-      }
+      return;
     }
+
+    dispatch(setSession(session));
+    dispatch(getUserPlaylists(session?.user.id ?? ""));
+    setStatus("ok");
+    navigate("/");
   };
 
   const clearInputs = () => {

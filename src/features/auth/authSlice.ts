@@ -37,7 +37,8 @@ export const authSlice = createSlice({
 });
 
 export const getSession = createAsyncThunk("auth/getSession", async () => {
-  const { data: song, error } = await supabase.from("song").select("id");
+  const { data } = await supabase.auth.getSession();
+  return data.session;
 });
 
 export const { setSession } = authSlice.actions;
