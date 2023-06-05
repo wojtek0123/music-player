@@ -15,7 +15,6 @@ import { Link } from "react-router-dom";
 import { hideMenu, toggleMenu } from "../features/popup/popupSlice";
 import { Song as SongType } from "../helpers/types";
 import { ToastOptions, toast } from "react-toastify";
-import { changeSong, playToggle } from "../features/player/playerSlice";
 
 interface SongProps {
   song: SongType;
@@ -133,11 +132,6 @@ const Song = ({ song, size, details, playlistOwnerId, playlistId }: SongProps) =
     return userPlaylistsExceptLikedSongs?.filter((playlist) => playlist.id !== playlistId) ?? [];
   };
 
-  const handlePlayClick = () => {
-    dispatch(changeSong(song.id));
-    dispatch(playToggle());
-  };
-
   useEffect(() => {
     return () => {
       dispatch(hideMenu());
@@ -171,7 +165,7 @@ const Song = ({ song, size, details, playlistOwnerId, playlistId }: SongProps) =
             </>
           )}
           {!loggedInUserId && <div></div>}
-          <button type="button" aria-label="Play" className={styles["play-btn"]} onClick={handlePlayClick}>
+          <button type="button" aria-label="Play" className={styles["play-btn"]}>
             <Icon icon="material-symbols:play-circle-rounded" width="100%" color="white" />
           </button>
           <button

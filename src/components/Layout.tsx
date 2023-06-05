@@ -10,7 +10,6 @@ import { setSession } from "../features/auth/authSlice";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import { options } from "./Song";
-import { Player } from "./Player";
 
 const Layout = () => {
   const navigate = useNavigate();
@@ -125,11 +124,11 @@ const Layout = () => {
             )}
           </div>
         </aside>
-        <div className={styles.outletWrapper}>
+        <div className={styles.outlet}>
           <Outlet />
         </div>
+        <div className={styles.player}>Player</div>
       </main>
-      <Player />
     </>
   );
 };

@@ -4,7 +4,11 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+html {
   font-family: "Roboto", sans-serif;
+  scroll-behavior: smooth;
 }
 
 :root {
@@ -26,6 +30,10 @@ body {
   color: var(--font-color);
   position: relative;
   z-index: 0;
+}
+
+body::-webkit-scrollbar {
+  display: none;
 }
 
 body::after {

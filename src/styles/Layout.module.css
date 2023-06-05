@@ -1,3 +1,7 @@
+:root {
+  --player-height: 8rem;
+}
+
 .main {
   display: flex;
   flex-direction: column;
@@ -87,8 +91,6 @@
   left: 0;
   right: 0;
   padding: 0.5rem 1rem;
-
-
 }
 
 .search-btn {
@@ -158,7 +160,6 @@
 }
 
 @media (min-width: 1024px) {
-
   .nav {
     display: none;
   }
@@ -166,29 +167,37 @@
   .main {
     display: grid;
     grid-template-columns: 20rem 1fr;
+    grid-template-rows: 1fr var(--player-height);
     position: relative;
-    height: 200px
+    height: 100svh;
+    overflow: hidden;
   }
 
   .aside {
     position: static;
-    top: 0;
     opacity: 0.85;
     width: 100%;
     transform: translateX(0);
     align-items: flex-start;
     justify-content: flex-start;
-    min-height: none;
   }
 
   .container {
-    top: 0;
-    height: 50px;
-    min-height: none;
+    height: calc(100svh - var(--player-height));
   }
 
-  .outletWrapper {
+  .outlet {
     overflow-y: scroll;
-    min-height: none;
+    height: 90svh;
+  }
+
+  .player {
+    width: 100%;
+    background-color: red;
+    grid-column: span 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--player-height);
   }
 }
