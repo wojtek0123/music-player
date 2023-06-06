@@ -66,7 +66,7 @@ export const playerSlice = createSlice({
 });
 
 export const changeSong = createAsyncThunk("player/changeSong", async (id: string) => {
-  const { data: songs } = await supabase.from("song").select().eq("id", id);
+  const { data: songs } = await supabase.from("song").select("*, author(*)").eq("id", id);
   const song = songs?.at(0);
 
   return song as Song;
