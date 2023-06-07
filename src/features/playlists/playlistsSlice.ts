@@ -3,7 +3,6 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { supabase } from "../../lib/supabase";
 import { Playlist, Song, Status } from "../../helpers/types";
 import { Simulate } from "react-dom/test-utils";
-import select = Simulate.select;
 
 export interface PlaylistsState {
   selectedPlaylist?: Playlist;
