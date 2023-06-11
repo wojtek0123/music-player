@@ -10,7 +10,6 @@ import { setSession } from "../features/auth/authSlice";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import { options } from "./Song";
-import PlayerSlice from "../features/player/playerSlice";
 import { Player } from "./Player";
 
 const Layout = () => {
@@ -133,6 +132,9 @@ const Layout = () => {
           <Player />
         </div>
       </main>
+      <div className={`${styles.player} ${styles.mobile}`}>
+        <Player />
+      </div>
     </>
   );
 };

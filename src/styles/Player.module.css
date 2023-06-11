@@ -19,6 +19,10 @@
 
 }
 
+.container.desktop {
+  display: none;
+}
+
 .container button {
   background-color: transparent;
   border: none;
@@ -157,10 +161,15 @@
   .container.mobileFullscreenView  {
     position: static;
     top: auto;
-    height: 7.5rem;
+    min-height: 7.5rem;
+    padding: 2rem;
   
     flex-direction: row;
     justify-content: flex-start;
+  }
+
+  .container.desktop {
+    display:flex;
   }
 
   .minimizeButton {

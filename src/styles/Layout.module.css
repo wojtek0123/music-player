@@ -159,6 +159,17 @@
   width: 100%;
 }
 
+.player {
+  display: none;
+}
+
+.player.mobile {
+  display: flex;
+  position: sticky;
+  bottom: 0;
+  width: 100%;
+}
+
 @media (min-width: 1024px) {
   .nav {
     display: none;
@@ -192,11 +203,14 @@
   }
 
   .player {
+    display: flex;
     position: sticky;
     bottom: 0;
     width: 100%;
-    background-color: red;
     grid-column: span 2;
-    height: var(--player-height);
+  }
+
+  .player.mobile {
+    display: none;
   }
 }

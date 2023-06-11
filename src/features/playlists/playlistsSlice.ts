@@ -2,7 +2,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { supabase } from "../../lib/supabase";
 import { Playlist, Song, Status } from "../../helpers/types";
-import { Simulate } from "react-dom/test-utils";
 
 export interface PlaylistsState {
   selectedPlaylist?: Playlist;
