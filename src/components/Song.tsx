@@ -15,7 +15,7 @@ import { Link } from "react-router-dom";
 import { hideMenu, toggleMenu } from "../features/popup/popupSlice";
 import { Song as SongType } from "../helpers/types";
 import { ToastOptions, toast } from "react-toastify";
-import { changeSong, playToggle } from "../features/player/playerSlice";
+import { changeSong, playToggle, pushQueue } from "../features/player/playerSlice";
 
 interface SongProps {
   song: SongType;
@@ -186,7 +186,14 @@ const Song = ({ song, size, details, playlistOwnerId, playlistId }: SongProps) =
       </div>
       {show && song.id === songId && (
         <div className={styles["popup-menu"]}>
-          <button className={styles["popup-menu-btn"]} type="button">
+          <button
+            className={styles["popup-menu-btn"]}
+            type="button"
+            onClick={() => {
+              dispatch(pushQueue(song.id));
+              dispatch(hideMenu());
+            }}
+          >
             Add to queue
           </button>
           {loggedInUserId === playlistOwnerId && playlistId !== likedSongsPlaylist?.id && (
