@@ -254,7 +254,9 @@ export const Player = (): JSX.Element => {
       className={mobileFullscreenView ? `${styles.container} ${styles.mobileFullscreenView}` : styles.container}
       role="button"
       tabIndex={0}
-      onClick={() => setMobileFullscreenView(true)}
+      onClick={() => {
+        if (window.innerWidth < 1024) setMobileFullscreenView(true);
+      }}
       onKeyDown={(e) => {
         if (e.key === "Enter") setMobileFullscreenView(true);
       }}
