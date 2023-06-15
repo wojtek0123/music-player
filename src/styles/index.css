@@ -18,6 +18,7 @@ html {
   --font-color: #fff;
   --secondary-font-color: #8e9196;
   --rounded: 0.8rem;
+  --shadow: #282828;
 }
 
 body {

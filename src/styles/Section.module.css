@@ -55,6 +55,17 @@
   }
 }
 
+<<<<<<< HEAD
+@media (min-width: 1280px) {
+  .songs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(35rem, 1fr));
+  }
+}
+
+
+=======
+>>>>>>> development
 @media (min-width: 1920px) {
   .show-more-btn {
     max-width: 100%;
