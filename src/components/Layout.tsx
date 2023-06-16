@@ -128,13 +128,9 @@ const Layout = () => {
         <div className={styles.outlet}>
           <Outlet />
         </div>
-        <div className={styles.player}>
-          <Player />
-        </div>
+        <div className={styles.player}>{window.innerWidth >= 1024 ? <Player /> : ""}</div>
       </main>
-      <div className={`${styles.player} ${styles.mobile}`}>
-        <Player />
-      </div>
+      <div className={`${styles.player} ${styles.mobile}`}>{window.innerWidth < 1024 ? <Player /> : ""}</div>
     </>
   );
 };
