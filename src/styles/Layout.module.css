@@ -199,7 +199,7 @@
 
   .outlet {
     overflow-y: scroll;
-    height: 90svh;
+    height: 88svh;
   }
 
   .player {
@@ -207,6 +207,7 @@
     position: sticky;
     bottom: 0;
     width: 100%;
+    height: 12svh;
     grid-column: span 2;
   }
 
