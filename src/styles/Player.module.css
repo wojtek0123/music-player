@@ -99,6 +99,10 @@
   opacity: 0.7;
 }
 
+.container:not(.mobileFullscreenView) .heartIcon {
+  display: none;
+}
+
 .heartIcon {
   width: 2rem;
   height: auto;
@@ -210,6 +214,11 @@
     justify-content: center;
     align-items: center;
     width: calc(80%);
+  }
+
+  .container.mobileFullscreenView .heartIcon,
+  .container:not(.mobileFullscreenView) .heartIcon {
+    display: block;
   }
 
   .container .controls,
