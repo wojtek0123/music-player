@@ -5,6 +5,7 @@ import { supabase } from "../../lib/supabase";
 const initialSong: Song | undefined = undefined;
 
 export interface PlayerState {
+  isMobileView: boolean;
   currentSong?: Song;
   isPlaying: boolean;
   queue: string[];
@@ -13,6 +14,7 @@ export interface PlayerState {
 }
 
 const initialState: PlayerState = {
+  isMobileView: true,
   currentSong: initialSong,
   isPlaying: false,
   queue: [],
@@ -24,6 +26,9 @@ export const playerSlice = createSlice({
   name: "player",
   initialState,
   reducers: {
+    setIsMobileView: (state, actions) => {
+      state.isMobileView = actions.payload;
+    },
     playToggle: (state) => {
       state.isPlaying = !state.isPlaying;
     },
@@ -72,7 +77,14 @@ export const changeSong = createAsyncThunk("player/changeSong", async (id: strin
   return song as Song;
 });
 
-export const { playToggle, pushHistory, popHistory, pushQueue, shiftQueue, putRandomSongFirstInQueue } =
-  playerSlice.actions;
+export const {
+  setIsMobileView,
+  playToggle,
+  pushHistory,
+  popHistory,
+  pushQueue,
+  shiftQueue,
+  putRandomSongFirstInQueue,
+} = playerSlice.actions;
 
 export default playerSlice.reducer;
