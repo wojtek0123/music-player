@@ -8,6 +8,7 @@ import {
   popHistory,
   shiftQueue,
   putRandomSongFirstInQueue,
+  setIsMobileView,
 } from "../features/player/playerSlice";
 import styles from "../styles/Player.module.css";
 import { useEffect, useRef, useState } from "react";
@@ -18,6 +19,7 @@ export const Player = (): JSX.Element => {
   const lastSongIdFromHistory = useSelector((state: RootState) => state.player.history.slice(-1)[0]);
   const queue = useSelector((state: RootState) => state.player?.queue);
   const firstSongIdFromQueue = useSelector((state: RootState) => state.player?.queue[0]);
+  const isMobileView = useSelector((state: RootState) => state.player.isMobileView);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -47,6 +49,20 @@ export const Player = (): JSX.Element => {
       isReadyRef.current = true;
     }
   }, [currentSong]);
+
+  useEffect(() => {
+    if (window.innerWidth < 1024) dispatch(setIsMobileView(true));
+    else dispatch(setIsMobileView(false));
+
+    window.addEventListener("resize", handleResize);
+    console.log("resized");
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const handleResize = () => {
+    if (window.innerWidth < 1024) dispatch(setIsMobileView(true));
+    else dispatch(setIsMobileView(false));
+  };
 
   const startTimer = () => {
     if (intervalRef.current !== null) window.clearInterval(intervalRef.current);
@@ -263,7 +279,9 @@ export const Player = (): JSX.Element => {
     </div>
   );
 
-  if (currentSong?.link === undefined)
+  if (currentSong?.link === undefined && isMobileView) return <></>;
+
+  if (currentSong?.link === undefined && !isMobileView)
     return (
       <div
         className={mobileFullscreenView ? `${styles.container} ${styles.mobileFullscreenView}` : styles.container}
@@ -276,7 +294,7 @@ export const Player = (): JSX.Element => {
       role="button"
       tabIndex={0}
       onClick={() => {
-        if (window.innerWidth < 1024) setMobileFullscreenView(true);
+        if (isMobileView) setMobileFullscreenView(true);
       }}
       onKeyDown={(e) => {
         if (e.key === "Enter") setMobileFullscreenView(true);
