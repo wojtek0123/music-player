@@ -12,6 +12,7 @@ import {
 } from "../features/player/playerSlice";
 import styles from "../styles/Player.module.css";
 import { useEffect, useRef, useState } from "react";
+import { addToLikedSongsPlaylist, removeFromLikedSongsPlaylist } from "../features/playlists/playlistsSlice";
 
 export const Player = (): JSX.Element => {
   const currentSong = useSelector((state: RootState) => state.player.currentSong);
@@ -20,6 +21,7 @@ export const Player = (): JSX.Element => {
   const queue = useSelector((state: RootState) => state.player?.queue);
   const firstSongIdFromQueue = useSelector((state: RootState) => state.player?.queue[0]);
   const isMobileView = useSelector((state: RootState) => state.player.isMobileView);
+  const likedSongsPlaylist = useSelector((state: RootState) => state.playlists.likedSongsPlaylist);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -38,6 +40,7 @@ export const Player = (): JSX.Element => {
 
     audioRef.current = new Audio(currentSong?.link);
     audioRef.current.volume = volume;
+
     if (intervalRef.current !== null) window.clearInterval(intervalRef.current);
     setSongProgress(audioRef.current.currentTime);
 
@@ -51,15 +54,14 @@ export const Player = (): JSX.Element => {
   }, [currentSong]);
 
   useEffect(() => {
-    if (window.innerWidth < 1024) dispatch(setIsMobileView(true));
-    else dispatch(setIsMobileView(false));
-
+    handleResize();
     window.addEventListener("resize", handleResize);
-    console.log("resized");
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const handleResize = () => {
+    setMobileFullscreenView(false);
+
     if (window.innerWidth < 1024) dispatch(setIsMobileView(true));
     else dispatch(setIsMobileView(false));
   };
@@ -143,6 +145,15 @@ export const Player = (): JSX.Element => {
     setIsShuffleOn(!isShuffleOn);
   };
 
+  const handleHeartClick = () => {
+    if (currentSong === undefined) return;
+
+    const isIncluded = likedSongsPlaylist?.songs.map((song) => song.id).includes(currentSong?.id);
+
+    if (!isIncluded) dispatch(addToLikedSongsPlaylist(currentSong));
+    else dispatch(removeFromLikedSongsPlaylist(currentSong.id));
+  };
+
   const minimizeButton = mobileFullscreenView ? (
     <button
       className={styles.minimizeButton}
@@ -169,9 +180,16 @@ export const Player = (): JSX.Element => {
             {currentSong?.author?.name ?? "unknown"}
           </button>
         </div>
-        {mobileFullscreenView ? (
-          <Icon className={styles.heartIcon} icon="mdi:cards-heart-outline" color="white" />
-        ) : null}
+        <Icon
+          className={styles.heartIcon}
+          icon={
+            currentSong !== undefined && likedSongsPlaylist?.songs.map((song) => song.id).includes(currentSong?.id)
+              ? "mdi:cards-heart"
+              : "mdi:cards-heart-outline"
+          }
+          color="white"
+          onClick={handleHeartClick}
+        />
       </div>
     </div>
   );
