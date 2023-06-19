@@ -1,5 +1,4 @@
 .container {
-  z-index: 10;
   position: sticky;
   bottom: 0;
   left: 0;
@@ -12,6 +11,7 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  /* align-items: center; */
 
   background-color: var(--background-color);
   border-top: 1px solid var(--shadow);
@@ -29,6 +29,7 @@
 }
 
 .container.mobileFullscreenView {
+  z-index: 100;
   position: fixed;
   top: 0;
 
@@ -139,6 +140,17 @@
   display: none;
 }
 
+
+
+.container.mobileFullscreenView .volumeBarContainer{
+  display: flex;
+  justify-content: center;
+}
+
+.container:not(.mobileFullscreenView) .volumeBarContainer {
+  display: none;
+}
+
 .container:not(.mobileFullscreenView) .progressBar ,
 .container:not(.mobileFullscreenView) .loopButton ,
 .container:not(.mobileFullscreenView) .skipBackButton ,
@@ -220,6 +232,17 @@
     margin: 0.5rem 0;
     display: flex;
     flex-direction: row;
+  }
+
+  .volumeBarContainer {
+    flex: 0.2;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+  }
+  
+  .container:not(.mobileFullscreenView) .volumeBarContainer {
+    display: flex;
   }
 
   .container .loopButton,
