@@ -25,6 +25,7 @@ export const Player = (): JSX.Element => {
   const [isLoopOn, setIsLoopOn] = useState(false);
   const [isShuffleOn, setIsShuffleOn] = useState(false);
   const [songProgress, setSongProgress] = useState(0);
+  const [volume, setVolume] = useState(0.5);
 
   const audioRef = useRef<HTMLAudioElement>(new Audio(currentSong?.link));
   const intervalRef = useRef<number | null>(null);
@@ -34,6 +35,7 @@ export const Player = (): JSX.Element => {
     audioRef.current.pause();
 
     audioRef.current = new Audio(currentSong?.link);
+    audioRef.current.volume = volume;
     if (intervalRef.current !== null) window.clearInterval(intervalRef.current);
     setSongProgress(audioRef.current.currentTime);
 
@@ -229,6 +231,25 @@ export const Player = (): JSX.Element => {
     </button>
   );
 
+  const volumeBar = (
+    <div className={styles.volumeBarContainer}>
+      <Icon icon="mingcute:volume-fill" color="white" />
+      <input
+        className={styles.volumeBar}
+        type="range"
+        name="progressBar"
+        min={0}
+        max={10}
+        value={volume * 10}
+        onChange={(e) => {
+          console.log(e.target.value);
+          setVolume(+e.target.value / 10);
+          audioRef.current.volume = +e.target.value / 10;
+        }}
+      />
+    </div>
+  );
+
   const controls = (
     <div className={styles.controls}>
       {progressBar}
@@ -264,6 +285,7 @@ export const Player = (): JSX.Element => {
       {minimizeButton}
       {songBox}
       {controls}
+      {volumeBar}
     </div>
   );
 };
