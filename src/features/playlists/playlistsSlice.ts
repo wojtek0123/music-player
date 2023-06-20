@@ -2,6 +2,8 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { supabase } from "../../lib/supabase";
 import { Playlist, Song, Status } from "../../helpers/types";
+import { toast } from "react-toastify";
+import { options } from "../../components/Song";
 
 export interface PlaylistsState {
   selectedPlaylist?: Playlist;
@@ -56,21 +58,14 @@ export const playlistsSlice = createSlice({
       ];
     },
     removeSongFromSelectedPlaylist: (state, action: PayloadAction<string>) => {
-      console.log("log 1");
       if (!state.selectedPlaylist) return;
-      if (!state.selectedPlaylist.songs) return;
-      console.log("log");
+
       state.selectedPlaylist.songs = state.selectedPlaylist?.songs.filter((song) => song.id !== action.payload);
     },
-    addToLikedSongsPlaylist: (state, action: PayloadAction<Song>) => {
-      if (state.likedSongsPlaylist) {
-        state.likedSongsPlaylist.songs = [...state.likedSongsPlaylist.songs, action.payload];
-      }
-    },
-    removeFromLikedSongsPlaylist: (state, action: PayloadAction<string>) => {
-      if (state.likedSongsPlaylist) {
-        state.likedSongsPlaylist.songs = state.likedSongsPlaylist.songs.filter((song) => song.id !== action.payload);
-      }
+    addSongToSelectedPlaylist: (state, action: PayloadAction<Song>) => {
+      if (!state.selectedPlaylist) return;
+
+      state.selectedPlaylist.songs = [...state.selectedPlaylist.songs, action.payload];
     },
     filterOutPlaylist: (state, action: PayloadAction<string>) => {
       state.userPlaylists = state.userPlaylists.filter((playlist) => playlist.id !== action.payload);
@@ -116,8 +111,58 @@ export const playlistsSlice = createSlice({
       state.selectedPlaylistStatus = "failed";
       state.selectedPlaylistErrorMsg = action.payload?.toString() ?? "";
     });
+
+    builder.addCase(removeFromLikedSongsPlaylist.fulfilled, (state, action) => {
+      if (!state.likedSongsPlaylist) return;
+      if (state.likedSongsPlaylist) {
+        state.likedSongsPlaylist.songs = state.likedSongsPlaylist.songs.filter((song) => song.id !== action.payload);
+
+        toast.success("Successfully removed song from playlist", options);
+      }
+    });
+
+    builder.addCase(addToLikedSongsPlaylist.fulfilled, (state, action) => {
+      if (state.likedSongsPlaylist) {
+        state.likedSongsPlaylist.songs = [...state.likedSongsPlaylist.songs, action.payload];
+
+        toast.success("Successfully added song to liked songs", options);
+      }
+    });
   },
 });
+
+export const removeFromLikedSongsPlaylist = createAsyncThunk(
+  "playlists/removeFromLikedSongsPlaylist",
+  async (params: { songId: string; likedSongsPlaylistId: string }, { rejectWithValue }) => {
+    const { error } = await supabase
+      .from("songs")
+      .delete()
+      .match({ song_id: params.songId, playlist_id: params.likedSongsPlaylistId });
+
+    if (error) {
+      toast.error(error.message, options);
+      return rejectWithValue(error.message);
+    }
+
+    return params.songId;
+  },
+);
+
+export const addToLikedSongsPlaylist = createAsyncThunk(
+  "playlists/addToLikedSongsPlaylist",
+  async (params: { song: Song; likedSongsPlaylistId: string }, { rejectWithValue }) => {
+    const { error } = await supabase
+      .from("songs")
+      .insert({ song_id: params.song.id, playlist_id: params.likedSongsPlaylistId });
+
+    if (error) {
+      toast.error(error.message, options);
+      return rejectWithValue(error.message);
+    }
+
+    return params.song;
+  },
+);
 
 export const getPlaylist = createAsyncThunk<Playlist | undefined, string>(
   "playlists/getPlaylist",
@@ -165,12 +210,11 @@ export const getUserPlaylists = createAsyncThunk<Playlist[], string>(
 
 export const {
   filterOutSong,
-  removeFromLikedSongsPlaylist,
-  addToLikedSongsPlaylist,
   filterOutPlaylist,
   addPlaylistToCurrentFetched,
   addSongToPlaylist,
   removeSongFromSelectedPlaylist,
+  addSongToSelectedPlaylist,
 } = playlistsSlice.actions;
 
 export default playlistsSlice.reducer;

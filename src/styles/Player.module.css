@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   top: auto;
-  
+
   width: 100%;
   padding: 1rem;
 
@@ -16,7 +16,6 @@
   background-color: var(--background-color);
   border-top: 1px solid var(--shadow);
   box-shadow: 0 0px 20px var(--shadow);
-
 }
 
 .container.desktop {
@@ -40,11 +39,11 @@
 .minimizeButton {
   position: fixed;
   left: 5%;
-  top: 1rem;
+  top: 3rem;
   width: 30px;
 }
 
-.minimizeButtonIcon{
+.minimizeButtonIcon {
   width: 3rem;
   height: auto;
 }
@@ -53,12 +52,11 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  
 }
 
 .container.mobileFullscreenView .songBox {
   margin: 0 0 1rem;
-  
+
   flex-direction: column;
 }
 
@@ -67,7 +65,7 @@
   height: auto;
 }
 
-.container.mobileFullscreenView .albumCoverIcon{
+.container.mobileFullscreenView .albumCoverIcon {
   width: 80%;
   height: auto;
   margin: 2rem 0 5vh;
@@ -82,7 +80,7 @@
 
 .songInfo {
   margin: 0 0.5rem;
-  
+
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -140,13 +138,11 @@
   justify-content: space-between;
 }
 
-.container:not(.mobileFullscreenView) .timeLabels{
+.container:not(.mobileFullscreenView) .timeLabels {
   display: none;
 }
 
-
-
-.container.mobileFullscreenView .volumeBarContainer{
+.container.mobileFullscreenView .volumeBarContainer {
   display: flex;
   justify-content: center;
 }
@@ -155,16 +151,15 @@
   display: none;
 }
 
-.container:not(.mobileFullscreenView) .progressBar ,
-.container:not(.mobileFullscreenView) .loopButton ,
-.container:not(.mobileFullscreenView) .skipBackButton ,
-.container:not(.mobileFullscreenView) .skipForwardButton ,
+.container:not(.mobileFullscreenView) .progressBar,
+.container:not(.mobileFullscreenView) .loopButton,
+.container:not(.mobileFullscreenView) .skipBackButton,
+.container:not(.mobileFullscreenView) .skipForwardButton,
 .container:not(.mobileFullscreenView) .shuffleButton {
   display: none;
 }
 
 @media only screen and (min-width: 768px) {
-
   .container:is(.mobileFullscreenView) .albumCoverIcon {
     width: 60%;
     height: auto;
@@ -173,19 +168,19 @@
 }
 
 @media only screen and (min-width: 1024px) {
-  .container ,
-  .container.mobileFullscreenView  {
+  .container,
+  .container.mobileFullscreenView {
     position: static;
     top: auto;
     min-height: 7.5rem;
     padding: 2rem;
-  
+
     flex-direction: row;
     justify-content: flex-start;
   }
 
   .container.desktop {
-    display:flex;
+    display: flex;
   }
 
   .minimizeButton {
@@ -195,19 +190,19 @@
   .songBox,
   .container.mobileFullscreenView .songBox {
     margin: 0;
-    
+
     flex-direction: row;
     justify-content: center;
     align-items: center;
   }
-  
+
   .container:is(.mobileFullscreenView) .albumCoverIcon,
-  .container:not(.mobileFullscreenView) .albumCoverIcon{
+  .container:not(.mobileFullscreenView) .albumCoverIcon {
     width: 4rem;
     height: auto;
     margin: 0;
   }
-  
+
   .container .songInfoWithHeart {
     display: flex;
     flex-direction: row;
@@ -224,7 +219,7 @@
   .container .controls,
   .container.mobileFullscreenView .controls {
     margin: 0;
-  
+
     display: flex;
     flex-direction: column-reverse;
     align-items: center;
@@ -232,7 +227,7 @@
   }
 
   .container .progressBar,
-  .container:not(.mobileFullscreenView) .progressBar  {
+  .container:not(.mobileFullscreenView) .progressBar {
     display: flex;
     width: 80%;
   }
@@ -249,17 +244,16 @@
     flex-direction: row;
     align-items: flex-end;
   }
-  
   .container:not(.mobileFullscreenView) .volumeBarContainer {
     display: flex;
   }
 
   .container .loopButton,
-  .container:not(.mobileFullscreenView) .loopButton ,
+  .container:not(.mobileFullscreenView) .loopButton,
   .container .skipBackButton,
-  .container:not(.mobileFullscreenView) .skipBackButton ,
+  .container:not(.mobileFullscreenView) .skipBackButton,
   .container .skipForwardButton,
-  .container:not(.mobileFullscreenView) .skipForwardButton ,
+  .container:not(.mobileFullscreenView) .skipForwardButton,
   .container .shuffleButton,
   .container:not(.mobileFullscreenView) .shuffleButton {
     display: block;
