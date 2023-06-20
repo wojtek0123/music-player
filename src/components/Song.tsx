@@ -4,6 +4,7 @@ import {
   removeFromLikedSongsPlaylist,
   addSongToPlaylist,
   removeSongFromSelectedPlaylist,
+  addSongToSelectedPlaylist,
 } from "../features/playlists/playlistsSlice";
 import { Icon } from "@iconify/react";
 import styles from "../styles/Song.module.css";
@@ -94,6 +95,10 @@ const Song = ({ song, size, details, playlistOwnerId, playlistId }: SongProps) =
 
   const addToLikedSongs = async () => {
     dispatch(addToLikedSongsPlaylist({ song, likedSongsPlaylistId: likedSongsPlaylist?.id ?? "" }));
+
+    if (playlistId === likedSongsPlaylist?.id) {
+      dispatch(addSongToSelectedPlaylist(song));
+    }
   };
 
   const removeFromLikedSongs = async () => {

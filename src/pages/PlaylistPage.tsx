@@ -162,7 +162,7 @@ const PlaylistPage = () => {
                 )}
               </>
             )}
-            {fetchedPlaylist?.user_id === loggedInUserId && (
+            {fetchedPlaylist?.user_id === loggedInUserId && fetchedPlaylist?.id !== likedSongPlaylistId && (
               <button type="button" onClick={removePlaylist} className={styles.btn}>
                 <Icon icon="material-symbols:delete-outline" color="white" width="100%" />
               </button>

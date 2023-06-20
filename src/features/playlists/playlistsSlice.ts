@@ -59,19 +59,14 @@ export const playlistsSlice = createSlice({
     },
     removeSongFromSelectedPlaylist: (state, action: PayloadAction<string>) => {
       if (!state.selectedPlaylist) return;
-      if (!state.selectedPlaylist.songs) return;
+
       state.selectedPlaylist.songs = state.selectedPlaylist?.songs.filter((song) => song.id !== action.payload);
     },
-    // addToLikedSongsPlaylist: (state, action: PayloadAction<Song>) => {
-    //   if (state.likedSongsPlaylist) {
-    //     state.likedSongsPlaylist.songs = [...state.likedSongsPlaylist.songs, action.payload];
-    //   }
-    // },
-    // removeFromLikedSongsPlaylist: (state, action: PayloadAction<string>) => {
-    //   if (state.likedSongsPlaylist) {
-    //     state.likedSongsPlaylist.songs = state.likedSongsPlaylist.songs.filter((song) => song.id !== action.payload);
-    //   }
-    // },
+    addSongToSelectedPlaylist: (state, action: PayloadAction<Song>) => {
+      if (!state.selectedPlaylist) return;
+
+      state.selectedPlaylist.songs = [...state.selectedPlaylist.songs, action.payload];
+    },
     filterOutPlaylist: (state, action: PayloadAction<string>) => {
       state.userPlaylists = state.userPlaylists.filter((playlist) => playlist.id !== action.payload);
 
@@ -219,6 +214,7 @@ export const {
   addPlaylistToCurrentFetched,
   addSongToPlaylist,
   removeSongFromSelectedPlaylist,
+  addSongToSelectedPlaylist,
 } = playlistsSlice.actions;
 
 export default playlistsSlice.reducer;

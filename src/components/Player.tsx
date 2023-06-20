@@ -12,9 +12,16 @@ import {
 } from "../features/player/playerSlice";
 import styles from "../styles/Player.module.css";
 import { useEffect, useRef, useState } from "react";
-import { addToLikedSongsPlaylist, removeFromLikedSongsPlaylist } from "../features/playlists/playlistsSlice";
+import {
+  addSongToSelectedPlaylist,
+  addToLikedSongsPlaylist,
+  removeFromLikedSongsPlaylist,
+  removeSongFromSelectedPlaylist,
+} from "../features/playlists/playlistsSlice";
+import { useParams } from "react-router-dom";
 
 export const Player = (): JSX.Element => {
+  const { playlistId } = useParams();
   const currentSong = useSelector((state: RootState) => state.player.currentSong);
   const isPlaying = useSelector((state: RootState) => state.player.isPlaying);
   const lastSongIdFromHistory = useSelector((state: RootState) => state.player.history.slice(-1)[0]);
@@ -124,8 +131,6 @@ export const Player = (): JSX.Element => {
     if (isLoopOn) {
       if (currentSong?.id !== undefined) dispatch(changeSong(currentSong?.id));
     } else if (firstSongIdFromQueue === undefined) {
-      // if (intervalRef.current !== null) window.clearInterval(intervalRef.current);
-
       audioRef.current.currentTime = audioRef.current.duration + 1;
       console.log(audioRef.current.ended);
       setSongProgress(audioRef.current.currentTime);
@@ -150,12 +155,21 @@ export const Player = (): JSX.Element => {
 
     const isIncluded = likedSongsPlaylist?.songs.map((song) => song.id).includes(currentSong?.id);
 
-    if (!isIncluded)
+    if (!isIncluded) {
       dispatch(addToLikedSongsPlaylist({ song: currentSong, likedSongsPlaylistId: likedSongsPlaylist?.id ?? "" }));
-    else
+
+      if (playlistId === likedSongsPlaylist?.id) {
+        dispatch(addSongToSelectedPlaylist(currentSong));
+      }
+    } else {
       dispatch(
         removeFromLikedSongsPlaylist({ songId: currentSong.id, likedSongsPlaylistId: likedSongsPlaylist?.id ?? "" }),
       );
+
+      if (playlistId === likedSongsPlaylist?.id) {
+        dispatch(removeSongFromSelectedPlaylist(currentSong.id));
+      }
+    }
   };
 
   const minimizeButton = mobileFullscreenView ? (
