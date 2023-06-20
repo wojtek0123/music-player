@@ -1,5 +1,4 @@
 .container {
-  z-index: 10;
   position: sticky;
   bottom: 0;
   left: 0;
@@ -12,6 +11,7 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  /* align-items: center; */
 
   background-color: var(--background-color);
   border-top: 1px solid var(--shadow);
@@ -29,6 +29,7 @@
 }
 
 .container.mobileFullscreenView {
+  z-index: 100;
   position: fixed;
   top: 0;
 
@@ -98,6 +99,10 @@
   opacity: 0.7;
 }
 
+.container:not(.mobileFullscreenView) .heartIcon {
+  display: none;
+}
+
 .heartIcon {
   width: 2rem;
   height: auto;
@@ -136,6 +141,17 @@
 }
 
 .container:not(.mobileFullscreenView) .timeLabels{
+  display: none;
+}
+
+
+
+.container.mobileFullscreenView .volumeBarContainer{
+  display: flex;
+  justify-content: center;
+}
+
+.container:not(.mobileFullscreenView) .volumeBarContainer {
   display: none;
 }
 
@@ -200,6 +216,11 @@
     width: calc(80%);
   }
 
+  .container.mobileFullscreenView .heartIcon,
+  .container:not(.mobileFullscreenView) .heartIcon {
+    display: block;
+  }
+
   .container .controls,
   .container.mobileFullscreenView .controls {
     margin: 0;
@@ -220,6 +241,17 @@
     margin: 0.5rem 0;
     display: flex;
     flex-direction: row;
+  }
+
+  .volumeBarContainer {
+    flex: 0.2;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+  }
+  
+  .container:not(.mobileFullscreenView) .volumeBarContainer {
+    display: flex;
   }
 
   .container .loopButton,

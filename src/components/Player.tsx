@@ -8,9 +8,11 @@ import {
   popHistory,
   shiftQueue,
   putRandomSongFirstInQueue,
+  setIsMobileView,
 } from "../features/player/playerSlice";
 import styles from "../styles/Player.module.css";
 import { useEffect, useRef, useState } from "react";
+import { addToLikedSongsPlaylist, removeFromLikedSongsPlaylist } from "../features/playlists/playlistsSlice";
 
 export const Player = (): JSX.Element => {
   const currentSong = useSelector((state: RootState) => state.player.currentSong);
@@ -18,6 +20,8 @@ export const Player = (): JSX.Element => {
   const lastSongIdFromHistory = useSelector((state: RootState) => state.player.history.slice(-1)[0]);
   const queue = useSelector((state: RootState) => state.player?.queue);
   const firstSongIdFromQueue = useSelector((state: RootState) => state.player?.queue[0]);
+  const isMobileView = useSelector((state: RootState) => state.player.isMobileView);
+  const likedSongsPlaylist = useSelector((state: RootState) => state.playlists.likedSongsPlaylist);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -25,6 +29,7 @@ export const Player = (): JSX.Element => {
   const [isLoopOn, setIsLoopOn] = useState(false);
   const [isShuffleOn, setIsShuffleOn] = useState(false);
   const [songProgress, setSongProgress] = useState(0);
+  const [volume, setVolume] = useState(0.5);
 
   const audioRef = useRef<HTMLAudioElement>(new Audio(currentSong?.link));
   const intervalRef = useRef<number | null>(null);
@@ -34,6 +39,8 @@ export const Player = (): JSX.Element => {
     audioRef.current.pause();
 
     audioRef.current = new Audio(currentSong?.link);
+    audioRef.current.volume = volume;
+
     if (intervalRef.current !== null) window.clearInterval(intervalRef.current);
     setSongProgress(audioRef.current.currentTime);
 
@@ -45,6 +52,19 @@ export const Player = (): JSX.Element => {
       isReadyRef.current = true;
     }
   }, [currentSong]);
+
+  useEffect(() => {
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const handleResize = () => {
+    setMobileFullscreenView(false);
+
+    if (window.innerWidth < 1024) dispatch(setIsMobileView(true));
+    else dispatch(setIsMobileView(false));
+  };
 
   const startTimer = () => {
     if (intervalRef.current !== null) window.clearInterval(intervalRef.current);
@@ -125,6 +145,15 @@ export const Player = (): JSX.Element => {
     setIsShuffleOn(!isShuffleOn);
   };
 
+  const handleHeartClick = () => {
+    if (currentSong === undefined) return;
+
+    const isIncluded = likedSongsPlaylist?.songs.map((song) => song.id).includes(currentSong?.id);
+
+    if (!isIncluded) dispatch(addToLikedSongsPlaylist(currentSong));
+    else dispatch(removeFromLikedSongsPlaylist(currentSong.id));
+  };
+
   const minimizeButton = mobileFullscreenView ? (
     <button
       className={styles.minimizeButton}
@@ -151,9 +180,16 @@ export const Player = (): JSX.Element => {
             {currentSong?.author?.name ?? "unknown"}
           </button>
         </div>
-        {mobileFullscreenView ? (
-          <Icon className={styles.heartIcon} icon="mdi:cards-heart-outline" color="white" />
-        ) : null}
+        <Icon
+          className={styles.heartIcon}
+          icon={
+            currentSong !== undefined && likedSongsPlaylist?.songs.map((song) => song.id).includes(currentSong?.id)
+              ? "mdi:cards-heart"
+              : "mdi:cards-heart-outline"
+          }
+          color="white"
+          onClick={handleHeartClick}
+        />
       </div>
     </div>
   );
@@ -229,6 +265,25 @@ export const Player = (): JSX.Element => {
     </button>
   );
 
+  const volumeBar = (
+    <div className={styles.volumeBarContainer}>
+      <Icon icon="mingcute:volume-fill" color="white" />
+      <input
+        className={styles.volumeBar}
+        type="range"
+        name="progressBar"
+        min={0}
+        max={10}
+        value={volume * 10}
+        onChange={(e) => {
+          console.log(e.target.value);
+          setVolume(+e.target.value / 10);
+          audioRef.current.volume = +e.target.value / 10;
+        }}
+      />
+    </div>
+  );
+
   const controls = (
     <div className={styles.controls}>
       {progressBar}
@@ -242,7 +297,9 @@ export const Player = (): JSX.Element => {
     </div>
   );
 
-  if (currentSong?.link === undefined)
+  if (currentSong?.link === undefined && isMobileView) return <></>;
+
+  if (currentSong?.link === undefined && !isMobileView)
     return (
       <div
         className={mobileFullscreenView ? `${styles.container} ${styles.mobileFullscreenView}` : styles.container}
@@ -255,7 +312,7 @@ export const Player = (): JSX.Element => {
       role="button"
       tabIndex={0}
       onClick={() => {
-        if (window.innerWidth < 1024) setMobileFullscreenView(true);
+        if (isMobileView) setMobileFullscreenView(true);
       }}
       onKeyDown={(e) => {
         if (e.key === "Enter") setMobileFullscreenView(true);
@@ -264,6 +321,7 @@ export const Player = (): JSX.Element => {
       {minimizeButton}
       {songBox}
       {controls}
+      {volumeBar}
     </div>
   );
 };

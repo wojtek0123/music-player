@@ -20,6 +20,7 @@ const Layout = () => {
   const dispatch = useDispatch<AppDispatch>();
   const session = useSelector((state: RootState) => state.auth.session);
   const userPlaylists = useSelector((state: RootState) => state.playlists.userPlaylists);
+  const isMobileView = useSelector((state: RootState) => state.player.isMobileView);
 
   const onLogOut = async () => {
     await supabase.auth.signOut();
@@ -128,9 +129,9 @@ const Layout = () => {
         <div className={styles.outlet}>
           <Outlet />
         </div>
-        <div className={styles.player}>{window.innerWidth >= 1024 ? <Player /> : ""}</div>
+        <div className={styles.player}>{!isMobileView ? <Player /> : ""}</div>
       </main>
-      <div className={`${styles.player} ${styles.mobile}`}>{window.innerWidth < 1024 ? <Player /> : ""}</div>
+      <div className={`${styles.player} ${styles.mobile}`}>{isMobileView ? <Player /> : ""}</div>
     </>
   );
 };

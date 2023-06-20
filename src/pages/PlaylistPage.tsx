@@ -10,6 +10,7 @@ import { Icon } from "@iconify/react";
 import { supabase } from "../lib/supabase";
 import { addPlaylistToLiked, removePlaylistFromLiked } from "../features/liked-playlists/likedPlaylists";
 import { toast } from "react-toastify";
+import { changeSong, playToggle, pushQueue } from "../features/player/playerSlice";
 
 const PlaylistPage = () => {
   const { playlistId } = useParams();
@@ -94,6 +95,22 @@ const PlaylistPage = () => {
     return likedPlaylists.findIndex((playlist) => playlist.id === playlistId) !== -1;
   };
 
+  const handlePlayAll = () => {
+    console.log(fetchedPlaylist?.songs);
+    if (fetchedPlaylist === undefined) return;
+
+    dispatch(changeSong(fetchedPlaylist?.songs[0]?.id));
+    dispatch(playToggle());
+
+    const otherSongs = fetchedPlaylist?.songs.slice(1);
+
+    if (otherSongs !== undefined) {
+      otherSongs.forEach((song) => {
+        dispatch(pushQueue(song.id));
+      });
+    }
+  };
+
   useEffect(() => {
     window.scrollTo(0, 0);
     if (!playlistId) return;
@@ -128,7 +145,7 @@ const PlaylistPage = () => {
             <span>{getSongsTime()}</span>
           </div>
           <div className={styles["button-wrapper"]}>
-            <button type="button" aria-label="Play" className={styles.btn}>
+            <button type="button" aria-label="Play" className={styles.btn} onClick={handlePlayAll}>
               <Icon icon="material-symbols:play-circle-rounded" width="100%" color="white" />
             </button>
             {loggedInUserId && fetchedPlaylist?.user_id !== loggedInUserId && (
