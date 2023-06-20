@@ -150,8 +150,12 @@ export const Player = (): JSX.Element => {
 
     const isIncluded = likedSongsPlaylist?.songs.map((song) => song.id).includes(currentSong?.id);
 
-    if (!isIncluded) dispatch(addToLikedSongsPlaylist(currentSong));
-    else dispatch(removeFromLikedSongsPlaylist(currentSong.id));
+    if (!isIncluded)
+      dispatch(addToLikedSongsPlaylist({ song: currentSong, likedSongsPlaylistId: likedSongsPlaylist?.id ?? "" }));
+    else
+      dispatch(
+        removeFromLikedSongsPlaylist({ songId: currentSong.id, likedSongsPlaylistId: likedSongsPlaylist?.id ?? "" }),
+      );
   };
 
   const minimizeButton = mobileFullscreenView ? (
