@@ -4,6 +4,7 @@ import {
   removeFromLikedSongsPlaylist,
   addSongToPlaylist,
   removeSongFromSelectedPlaylist,
+  addSongToSelectedPlaylist,
 } from "../features/playlists/playlistsSlice";
 import { Icon } from "@iconify/react";
 import styles from "../styles/Song.module.css";
@@ -69,7 +70,6 @@ const Song = ({ song, size, details, playlistOwnerId, playlistId }: SongProps) =
   };
 
   const addToPlaylist = async (playlistId: string) => {
-    // todo: after adding a song to playlist pop up should disappear
     const filteredPlaylist = userPlaylists.find((playlist) => playlist.id === playlistId);
 
     dispatch(hideMenu());
@@ -94,35 +94,19 @@ const Song = ({ song, size, details, playlistOwnerId, playlistId }: SongProps) =
   };
 
   const addToLikedSongs = async () => {
-    const { error } = await supabase
-      .from("songs")
-      .insert({ song_id: song.id, playlist_id: likedSongsPlaylist?.id ?? "" });
-    if (error) {
-      toast.error(error.message, options);
-      return;
+    dispatch(addToLikedSongsPlaylist({ song, likedSongsPlaylistId: likedSongsPlaylist?.id ?? "" }));
+
+    if (playlistId === likedSongsPlaylist?.id) {
+      dispatch(addSongToSelectedPlaylist(song));
     }
-    dispatch(addToLikedSongsPlaylist(song));
-    toast.success("Successfully added song to liked songs", options);
   };
 
   const removeFromLikedSongs = async () => {
-    const { error } = await supabase
-      .from("songs")
-      .delete()
-      .match({ song_id: song.id, playlist_id: likedSongsPlaylist?.id ?? "" });
-
-    if (error) {
-      toast.error(error.message, options);
-      return;
-    }
-
-    dispatch(removeFromLikedSongsPlaylist(song.id));
+    dispatch(removeFromLikedSongsPlaylist({ songId: song.id, likedSongsPlaylistId: likedSongsPlaylist?.id ?? "" }));
 
     if (playlistId === likedSongsPlaylist?.id) {
       dispatch(removeSongFromSelectedPlaylist(song.id));
     }
-
-    toast.success("Successfully removed song from playlist", options);
   };
 
   const isSongIncluded = () => {
