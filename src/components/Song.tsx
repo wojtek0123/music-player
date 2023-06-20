@@ -122,6 +122,12 @@ const Song = ({ song, size, details, playlistOwnerId, playlistId }: SongProps) =
     dispatch(playToggle());
   };
 
+  const addSongToQueue = () => {
+    dispatch(pushQueue(song.id));
+    dispatch(hideMenu());
+    toast.success("Successfully added song to queue", options);
+  };
+
   useEffect(() => {
     return () => {
       dispatch(hideMenu());
@@ -170,14 +176,7 @@ const Song = ({ song, size, details, playlistOwnerId, playlistId }: SongProps) =
       </div>
       {show && song.id === songId && (
         <div className={styles["popup-menu"]}>
-          <button
-            className={styles["popup-menu-btn"]}
-            type="button"
-            onClick={() => {
-              dispatch(pushQueue(song.id));
-              dispatch(hideMenu());
-            }}
-          >
+          <button className={styles["popup-menu-btn"]} type="button" onClick={addSongToQueue}>
             Add to queue
           </button>
           {loggedInUserId === playlistOwnerId && playlistId !== likedSongsPlaylist?.id && (
