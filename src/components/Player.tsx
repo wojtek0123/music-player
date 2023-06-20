@@ -65,6 +65,7 @@ export const Player = (): JSX.Element => {
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleResize = () => {
