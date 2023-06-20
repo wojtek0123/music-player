@@ -226,10 +226,22 @@
     flex-grow: 0.8;
   }
 
+  .progressBarContainer {
+    flex-direction: column;
+  }
+
   .container .progressBar,
   .container:not(.mobileFullscreenView) .progressBar {
+    order: 2;
     display: flex;
     width: 80%;
+  }
+
+  .container.mobileFullscreenView .timeLabels,
+  .container:not(.mobileFullscreenView) .timeLabels {
+    width: 80%;
+    display: flex;
+    justify-content: space-between;
   }
 
   .container .controlButtons {
