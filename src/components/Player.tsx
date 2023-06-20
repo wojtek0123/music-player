@@ -58,6 +58,7 @@ export const Player = (): JSX.Element => {
     } else {
       isReadyRef.current = true;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentSong]);
 
   useEffect(() => {
