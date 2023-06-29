@@ -96,7 +96,6 @@ const PlaylistPage = () => {
   };
 
   const handlePlayAll = () => {
-    console.log(fetchedPlaylist?.songs);
     if (fetchedPlaylist === undefined) return;
 
     dispatch(changeSong(fetchedPlaylist?.songs[0]?.id));
