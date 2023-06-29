@@ -68,10 +68,6 @@ const Layout = () => {
         <button type="button" className={styles.hamburger} onClick={toggleHamburgerMenu}>
           <Icon icon="pajamas:hamburger" color="white" width="100%" />
         </button>
-
-        <Link to="/" className={styles["search-btn"]}>
-          <Icon icon="material-symbols:search" color="white" width="100%" />
-        </Link>
       </nav>
       <main className={styles.main}>
         <aside className={visibility ? styles.aside + " " + styles.show : styles.aside}>
