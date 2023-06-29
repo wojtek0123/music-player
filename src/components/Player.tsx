@@ -58,12 +58,14 @@ export const Player = (): JSX.Element => {
     } else {
       isReadyRef.current = true;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentSong]);
 
   useEffect(() => {
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleResize = () => {
@@ -80,8 +82,7 @@ export const Player = (): JSX.Element => {
       if (audioRef.current.ended) {
         if (isPlaying) dispatch(playToggle());
         if (intervalRef.current !== null) window.clearInterval(intervalRef.current);
-        if (currentSong !== undefined) return;
-        else onSkipForwardButtonClick();
+        onSkipForwardButtonClick();
       } else {
         setSongProgress(audioRef.current.currentTime);
       }
