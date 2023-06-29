@@ -82,8 +82,7 @@ export const Player = (): JSX.Element => {
       if (audioRef.current.ended) {
         if (isPlaying) dispatch(playToggle());
         if (intervalRef.current !== null) window.clearInterval(intervalRef.current);
-        if (currentSong !== undefined) return;
-        else onSkipForwardButtonClick();
+        onSkipForwardButtonClick();
       } else {
         setSongProgress(audioRef.current.currentTime);
       }
